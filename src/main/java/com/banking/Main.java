@@ -139,7 +139,9 @@ public class Main {
     }
 
     private static void displayUserMenu() {
-        System.out.println("\n--- User Menu (Logged in as: " + bankingSystem.getCurrentLoggedInAccount() + ") ---");
+        String accountNumber = bankingSystem.getCurrentLoggedInAccount();
+        String holderName = bankingSystem.getAccountHolderName(accountNumber);
+        System.out.println("\n--- User Menu (Logged in as: " + holderName + ") ---");
         System.out.println("1. Deposit Money");
         System.out.println("2. Withdraw Money");
         System.out.println("3. Transfer Funds");
@@ -176,7 +178,8 @@ public class Main {
         String pin = scanner.nextLine().trim();
         
         bankingSystem.login(accountNumber, pin);
-        System.out.println("Login successful! Welcome, " + accountNumber);
+        String holderName = bankingSystem.getAccountHolderName(accountNumber);
+        System.out.println("Login successful! Welcome, " + holderName);
     }
 
     private static void createAccount() {

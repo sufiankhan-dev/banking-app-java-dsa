@@ -88,6 +88,11 @@ public class BankingSystem {
         return currentLoggedInAccount != null;
     }
 
+    public String getAccountHolderName(String accountNumber) {
+        Account account = getAccount(accountNumber);
+        return account.getHolderName();
+    }
+
     public boolean deposit(String accountNumber, double amount) {
         Account account = getAccount(accountNumber);
         double oldBalance = account.getBalance();

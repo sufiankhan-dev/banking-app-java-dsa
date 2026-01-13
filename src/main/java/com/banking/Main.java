@@ -335,15 +335,29 @@ public class Main {
         
         try {
             int n = Integer.parseInt(nInput);
-            List<Transaction> transactions = bankingSystem.getLastNTransactions(accountNumber, n);
+            if (n <= 0) {
+                System.out.println("Error: Number must be greater than zero.");
+                return;
+            }
             
-            if (transactions.isEmpty()) {
-                System.out.println("No transactions found.");
+            List<Transaction> allTransactions = bankingSystem.getTransactionHistory(accountNumber);
+            int totalTransactions = allTransactions.size();
+            
+            if (totalTransactions == 0) {
+                System.out.println("No transactions found for this account.");
+                return;
+            }
+            
+            if (n > totalTransactions) {
+                System.out.println("Note: You requested " + n + " transactions, but only " + totalTransactions + " transaction(s) available.");
+                System.out.println("Showing all " + totalTransactions + " transaction(s):\n");
             } else {
-                System.out.println("=== Last " + n + " Transactions ===\n");
-                for (Transaction txn : transactions) {
-                    System.out.println(txn.toString());
-                }
+                System.out.println("=== Last " + n + " Transaction(s) ===\n");
+            }
+            
+            List<Transaction> transactions = bankingSystem.getLastNTransactions(accountNumber, n);
+            for (Transaction txn : transactions) {
+                System.out.println(txn.toString());
             }
         } catch (NumberFormatException e) {
             System.out.println("Error: Invalid number. Please enter a valid integer.");

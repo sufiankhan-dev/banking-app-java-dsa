@@ -92,8 +92,6 @@ public class BankingSystem {
 
     public boolean deposit(String accountNumber, double amount) {
         Account account = getAccount(accountNumber);
-        double oldBalance = account.getBalance();
-        
         account.deposit(amount);
         
         Transaction transaction = new Transaction(accountNumber, Transaction.TransactionType.DEPOSIT, amount);
@@ -104,8 +102,6 @@ public class BankingSystem {
 
     public boolean withdraw(String accountNumber, double amount) {
         Account account = getAccount(accountNumber);
-        double oldBalance = account.getBalance();
-        
         account.withdraw(amount);
         
         Transaction transaction = new Transaction(accountNumber, Transaction.TransactionType.WITHDRAW, amount);

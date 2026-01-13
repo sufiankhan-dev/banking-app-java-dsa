@@ -37,30 +37,6 @@ public class Transaction {
         this.relatedAccount = relatedAccount;
     }
 
-    public String getTransactionId() {
-        return transactionId;
-    }
-
-    public String getAccountNumber() {
-        return accountNumber;
-    }
-
-    public TransactionType getType() {
-        return type;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public LocalDateTime getDate() {
-        return date;
-    }
-
-    public String getRelatedAccount() {
-        return relatedAccount;
-    }
-
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

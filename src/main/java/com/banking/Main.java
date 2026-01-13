@@ -7,6 +7,8 @@ public class Main {
     private static BankingSystem bankingSystem;
     private static Scanner scanner;
     private static boolean isAdminMode = false;
+    private static final String ADMIN_USERNAME = "admin";
+    private static final String ADMIN_PASSWORD = "admin123";
 
     public static void main(String[] args) {
         bankingSystem = new BankingSystem();
@@ -41,8 +43,7 @@ public class Main {
                             createAccount();
                             break;
                         case "3":
-                            isAdminMode = true;
-                            System.out.println("\nSwitched to Admin Mode");
+                            authenticateAdmin();
                             break;
                         case "4":
                             running = false;
@@ -176,6 +177,22 @@ public class Main {
         bankingSystem.login(accountNumber, pin);
         String holderName = bankingSystem.getAccountHolderName(accountNumber);
         System.out.println("Login successful! Welcome, " + holderName);
+    }
+
+    private static void authenticateAdmin() {
+        System.out.println("\n--- Admin Authentication ---");
+        System.out.print("Enter Admin Username: ");
+        String username = scanner.nextLine().trim();
+        
+        System.out.print("Enter Admin Password: ");
+        String password = scanner.nextLine().trim();
+        
+        if (username.equals(ADMIN_USERNAME) && password.equals(ADMIN_PASSWORD)) {
+            isAdminMode = true;
+            System.out.println("\nAdmin authentication successful! Welcome to Admin Mode.");
+        } else {
+            System.out.println("\nError: Invalid admin credentials. Access denied.");
+        }
     }
 
     private static void createAccount() {

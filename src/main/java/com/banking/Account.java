@@ -6,20 +6,16 @@ import java.security.NoSuchAlgorithmException;
 public class Account {
     private String accountNumber;
     private String holderName;
-    private String cnic;
     private double balance;
     private AccountStatus status;
     private String hashedPin;
 
-    public Account(String accountNumber, String holderName, String cnic, double initialBalance, String pin) {
+    public Account(String accountNumber, String holderName, double initialBalance, String pin) {
         if (accountNumber == null || accountNumber.trim().isEmpty()) {
             throw new IllegalArgumentException("Account number cannot be null or empty");
         }
         if (holderName == null || holderName.trim().isEmpty()) {
             throw new IllegalArgumentException("Holder name cannot be null or empty");
-        }
-        if (cnic == null || cnic.trim().isEmpty()) {
-            throw new IllegalArgumentException("CNIC/ID cannot be null or empty");
         }
         if (initialBalance < 0) {
             throw new IllegalArgumentException("Initial balance cannot be negative");
@@ -30,7 +26,6 @@ public class Account {
         
         this.accountNumber = accountNumber.trim();
         this.holderName = holderName.trim();
-        this.cnic = cnic.trim();
         this.balance = initialBalance;
         this.status = AccountStatus.ACTIVE;
         this.hashedPin = hashPin(pin);
@@ -42,10 +37,6 @@ public class Account {
 
     public String getHolderName() {
         return holderName;
-    }
-
-    public String getCnic() {
-        return cnic;
     }
 
     public double getBalance() {
@@ -65,13 +56,6 @@ public class Account {
             throw new IllegalArgumentException("Holder name cannot be null or empty");
         }
         this.holderName = holderName.trim();
-    }
-
-    public void setCnic(String cnic) {
-        if (cnic == null || cnic.trim().isEmpty()) {
-            throw new IllegalArgumentException("CNIC/ID cannot be null or empty");
-        }
-        this.cnic = cnic.trim();
     }
 
     public boolean validatePin(String pin) {
@@ -139,8 +123,8 @@ public class Account {
 
     @Override
     public String toString() {
-        return String.format("Account Number: %s | Holder: %s | CNIC: %s | Balance: $%.2f | Status: %s", 
-                           accountNumber, holderName, cnic, balance, status);
+        return String.format("Account Number: %s | Holder: %s | Balance: $%.2f | Status: %s", 
+                           accountNumber, holderName, balance, status);
     }
 }
 

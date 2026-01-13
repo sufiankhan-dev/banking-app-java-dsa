@@ -17,7 +17,7 @@ public class BankingSystem {
         this.currentLoggedInAccount = null;
     }
 
-    public boolean createAccount(String accountNumber, String holderName, String cnic, double initialBalance, String pin) {
+    public boolean createAccount(String accountNumber, String holderName, double initialBalance, String pin) {
         if (accounts.containsKey(accountNumber)) {
             throw new IllegalArgumentException("Account number already exists: " + accountNumber);
         }
@@ -25,13 +25,13 @@ public class BankingSystem {
             throw new IllegalArgumentException("Initial balance cannot be negative");
         }
         
-        Account account = new Account(accountNumber, holderName, cnic, initialBalance, pin);
+        Account account = new Account(accountNumber, holderName, initialBalance, pin);
         accounts.put(accountNumber, account);
         transactions.put(accountNumber, new ArrayList<>());
         return true;
     }
 
-    public boolean updateAccountInfo(String accountNumber, String newHolderName, String newCnic) {
+    public boolean updateAccountInfo(String accountNumber, String newHolderName) {
         Account account = getAccount(accountNumber);
         if (account.getStatus() == AccountStatus.CLOSED) {
             throw new IllegalStateException("Cannot update a closed account");
@@ -39,9 +39,6 @@ public class BankingSystem {
         
         if (newHolderName != null && !newHolderName.trim().isEmpty()) {
             account.setHolderName(newHolderName);
-        }
-        if (newCnic != null && !newCnic.trim().isEmpty()) {
-            account.setCnic(newCnic);
         }
         return true;
     }

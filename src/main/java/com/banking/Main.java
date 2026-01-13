@@ -190,9 +190,6 @@ public class Main {
         System.out.print("Enter Holder Name: ");
         String holderName = scanner.nextLine().trim();
         
-        System.out.print("Enter CNIC/ID: ");
-        String cnic = scanner.nextLine().trim();
-        
         System.out.print("Enter Initial Balance: $");
         String balanceInput = scanner.nextLine().trim();
         
@@ -201,7 +198,7 @@ public class Main {
         
         try {
             double initialBalance = Double.parseDouble(balanceInput);
-            bankingSystem.createAccount(accountNumber, holderName, cnic, initialBalance, pin);
+            bankingSystem.createAccount(accountNumber, holderName, initialBalance, pin);
             System.out.println("Account created successfully!");
             System.out.println(bankingSystem.displayAccountInfo(accountNumber));
         } catch (NumberFormatException e) {
@@ -316,17 +313,12 @@ public class Main {
         System.out.print("Enter New Holder Name (press Enter to skip): ");
         String newName = scanner.nextLine().trim();
         
-        System.out.print("Enter New CNIC/ID (press Enter to skip): ");
-        String newCnic = scanner.nextLine().trim();
-        
-        if (newName.isEmpty() && newCnic.isEmpty()) {
+        if (newName.isEmpty()) {
             System.out.println("No changes made.");
             return;
         }
         
-        bankingSystem.updateAccountInfo(accountNumber, 
-                newName.isEmpty() ? null : newName, 
-                newCnic.isEmpty() ? null : newCnic);
+        bankingSystem.updateAccountInfo(accountNumber, newName);
         System.out.println("Account information updated successfully!");
         System.out.println(bankingSystem.displayAccountInfo(accountNumber));
     }

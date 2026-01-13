@@ -96,24 +96,21 @@ public class Main {
                             transferFunds();
                             break;
                         case "4":
-                            checkBalance();
-                            break;
-                        case "5":
                             displayAccountInfo();
                             break;
-                        case "6":
+                        case "5":
                             displayTransactionHistory();
                             break;
-                        case "7":
+                        case "6":
                             displayLastNTransactions();
                             break;
-                        case "8":
+                        case "7":
                             updateAccountInfo();
                             break;
-                        case "9":
+                        case "8":
                             changePin();
                             break;
-                        case "10":
+                        case "9":
                             bankingSystem.logout();
                             System.out.println("\nLogged out successfully!");
                             break;
@@ -145,13 +142,12 @@ public class Main {
         System.out.println("1. Deposit Money");
         System.out.println("2. Withdraw Money");
         System.out.println("3. Transfer Funds");
-        System.out.println("4. Check Balance");
-        System.out.println("5. Display Account Information");
-        System.out.println("6. View Transaction History");
-        System.out.println("7. View Last N Transactions");
-        System.out.println("8. Update Account Info");
-        System.out.println("9. Change PIN");
-        System.out.println("10. Logout");
+        System.out.println("4. View Account Information");
+        System.out.println("5. View Transaction History");
+        System.out.println("6. View Last N Transactions");
+        System.out.println("7. Update Account Info");
+        System.out.println("8. Change PIN");
+        System.out.println("9. Logout");
         System.out.println("----------------------------------------");
     }
 
@@ -316,13 +312,6 @@ public class Main {
         } catch (NumberFormatException e) {
             System.out.println("Error: Invalid amount. Please enter a valid number.");
         }
-    }
-
-    private static void checkBalance() {
-        System.out.println("\n--- Check Balance ---");
-        String accountNumber = bankingSystem.getCurrentLoggedInAccount();
-        double balance = bankingSystem.getBalance(accountNumber);
-        System.out.println("Current Balance: $" + String.format("%.2f", balance));
     }
 
     private static void displayAccountInfo() {

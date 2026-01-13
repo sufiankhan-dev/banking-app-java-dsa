@@ -184,25 +184,80 @@ public class Main {
 
     private static void createAccount() {
         System.out.println("\n--- Create New Account ---");
-        System.out.print("Enter Account Number: ");
-        String accountNumber = scanner.nextLine().trim();
         
-        System.out.print("Enter Holder Name: ");
-        String holderName = scanner.nextLine().trim();
+        String accountNumber = null;
+        while (true) {
+            System.out.print("Enter Account Number: ");
+            accountNumber = scanner.nextLine().trim();
+            
+            if (accountNumber.isEmpty()) {
+                System.out.println("Error: Account number cannot be empty. Please try again.");
+                continue;
+            }
+            
+            if (bankingSystem.accountExists(accountNumber)) {
+                System.out.println("Error: Account number already exists. Please try a different account number.");
+                continue;
+            }
+            
+            break;
+        }
         
-        System.out.print("Enter Initial Balance: $");
-        String balanceInput = scanner.nextLine().trim();
+        String holderName = null;
+        while (true) {
+            System.out.print("Enter Holder Name: ");
+            holderName = scanner.nextLine().trim();
+            
+            if (holderName.isEmpty()) {
+                System.out.println("Error: Holder name cannot be empty. Please try again.");
+                continue;
+            }
+            
+            break;
+        }
         
-        System.out.print("Enter PIN: ");
-        String pin = scanner.nextLine().trim();
+        double initialBalance = 0;
+        while (true) {
+            System.out.print("Enter Initial Balance: $");
+            String balanceInput = scanner.nextLine().trim();
+            
+            if (balanceInput.isEmpty()) {
+                System.out.println("Error: Balance cannot be empty. Please try again.");
+                continue;
+            }
+            
+            try {
+                initialBalance = Double.parseDouble(balanceInput);
+                if (initialBalance < 0) {
+                    System.out.println("Error: Initial balance cannot be negative. Please enter a non-negative amount.");
+                    continue;
+                }
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Error: Invalid balance amount. Please enter a valid number.");
+                continue;
+            }
+        }
+        
+        String pin = null;
+        while (true) {
+            System.out.print("Enter PIN: ");
+            pin = scanner.nextLine().trim();
+            
+            if (pin.isEmpty()) {
+                System.out.println("Error: PIN cannot be empty. Please try again.");
+                continue;
+            }
+            
+            break;
+        }
         
         try {
-            double initialBalance = Double.parseDouble(balanceInput);
             bankingSystem.createAccount(accountNumber, holderName, initialBalance, pin);
             System.out.println("Account created successfully!");
             System.out.println(bankingSystem.displayAccountInfo(accountNumber));
-        } catch (NumberFormatException e) {
-            System.out.println("Error: Invalid balance amount. Please enter a valid number.");
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
         }
     }
 

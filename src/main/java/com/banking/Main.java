@@ -17,7 +17,8 @@ public class Main {
         System.out.println("========================================");
         System.out.println("   Welcome to Banking System (CLI)");
         System.out.println("   Using HashMap for Account Storage");
-        System.out.println("========================================\n");
+        System.out.println("========================================");
+        bankingSystem.displayLoadStatus();
         
         boolean running = true;
         

@@ -12,9 +12,18 @@ public class BankingSystem {
     private String currentLoggedInAccount;
 
     public BankingSystem() {
-        this.accounts = new HashMap<>();
-        this.transactions = new HashMap<>();
+        this.accounts = FileHandler.loadAccounts();
+        this.transactions = FileHandler.loadTransactions();
         this.currentLoggedInAccount = null;
+    }
+    
+    public void displayLoadStatus() {
+        if (accounts.isEmpty() && transactions.isEmpty()) {
+            System.out.println("No existing data found. Starting with empty system.\n");
+        } else {
+            int totalTransactions = transactions.values().stream().mapToInt(List::size).sum();
+            System.out.println("Loaded " + accounts.size() + " account(s) and " + totalTransactions + " transaction(s) from files.\n");
+        }
     }
 
     public boolean createAccount(String accountNumber, String holderName, double initialBalance, String pin) {
@@ -28,6 +37,7 @@ public class BankingSystem {
         Account account = new Account(accountNumber, holderName, initialBalance, pin);
         accounts.put(accountNumber, account);
         transactions.put(accountNumber, new ArrayList<>());
+        FileHandler.saveAccounts(accounts);
         return true;
     }
 
@@ -39,6 +49,7 @@ public class BankingSystem {
         
         if (newHolderName != null && !newHolderName.trim().isEmpty()) {
             account.setHolderName(newHolderName);
+            FileHandler.saveAccounts(accounts);
         }
         return true;
     }
@@ -46,6 +57,7 @@ public class BankingSystem {
     public boolean closeAccount(String accountNumber) {
         Account account = getAccount(accountNumber);
         account.setStatus(AccountStatus.CLOSED);
+        FileHandler.saveAccounts(accounts);
         return true;
     }
 
@@ -96,6 +108,8 @@ public class BankingSystem {
         
         Transaction transaction = new Transaction(accountNumber, Transaction.TransactionType.DEPOSIT, amount);
         transactions.get(accountNumber).add(transaction);
+        FileHandler.saveAccounts(accounts);
+        FileHandler.saveTransactions(transactions);
         
         return true;
     }
@@ -106,6 +120,8 @@ public class BankingSystem {
         
         Transaction transaction = new Transaction(accountNumber, Transaction.TransactionType.WITHDRAW, amount);
         transactions.get(accountNumber).add(transaction);
+        FileHandler.saveAccounts(accounts);
+        FileHandler.saveTransactions(transactions);
         
         return true;
     }
@@ -148,6 +164,9 @@ public class BankingSystem {
             
             transactions.get(senderAccount).add(transferOut);
             transactions.get(receiverAccount).add(transferIn);
+            
+            FileHandler.saveAccounts(accounts);
+            FileHandler.saveTransactions(transactions);
             
             return true;
         } catch (Exception e) {
@@ -229,6 +248,7 @@ public class BankingSystem {
             throw new IllegalStateException("Cannot freeze a closed account");
         }
         account.setStatus(AccountStatus.FROZEN);
+        FileHandler.saveAccounts(accounts);
         return true;
     }
 
@@ -238,6 +258,7 @@ public class BankingSystem {
             throw new IllegalStateException("Cannot unfreeze a closed account");
         }
         account.setStatus(AccountStatus.ACTIVE);
+        FileHandler.saveAccounts(accounts);
         return true;
     }
 
@@ -308,6 +329,7 @@ public class BankingSystem {
     public boolean changePin(String accountNumber, String oldPin, String newPin) {
         Account account = getAccount(accountNumber);
         account.changePin(oldPin, newPin);
+        FileHandler.saveAccounts(accounts);
         return true;
     }
 

@@ -51,6 +51,18 @@ public class Account {
         this.status = status;
     }
 
+    public String getHashedPin() {
+        return hashedPin;
+    }
+
+    public void setHashedPin(String hashedPin) {
+        this.hashedPin = hashedPin;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
     public void setHolderName(String holderName) {
         if (holderName == null || holderName.trim().isEmpty()) {
             throw new IllegalArgumentException("Holder name cannot be null or empty");

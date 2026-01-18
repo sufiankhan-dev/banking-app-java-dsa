@@ -1,22 +1,118 @@
-# Banking System (Using HashMap)
+# Banking System
 
-A command-line interface (CLI) based Java application for managing bank accounts using HashMap data structure.
+A comprehensive Java-based banking application with a modern graphical user interface (GUI) for managing bank accounts, transactions, and user authentication. Built using Java Swing and implementing efficient data structures for optimal performance.
 
-## Group-8 Members
+## 🚀 Features
 
-- Javeria Razzaq
-- Ayesha Iqbal
-- Sehrish Amin
-- Sufian Khan
+### User Features
+- **Account Management**
+  - Create new accounts with username-based authentication
+  - Auto-generated unique 5-digit account numbers
+  - Update account information (username and holder name)
+  - View account details with modern card-based UI
 
-## Features
+- **Transaction Operations**
+  - Deposit money with real-time balance updates
+  - Withdraw funds with balance validation
+  - Transfer funds between accounts
+  - View transaction history with filtering options
+  - Display recent transactions (last 5) on dashboard
 
-- **Stores account details using account number as key**: Uses HashMap for efficient O(1) lookup
-- **Handles deposits and withdrawals**: Secure transaction processing with validation
-- **Checks balance and transaction validity**: Real-time balance checking and transaction validation
-- **Displays account information**: View individual or all accounts
+- **Security**
+  - PIN-based authentication with SHA-256 hashing
+  - Account status management (ACTIVE, FROZEN, CLOSED)
+  - Secure login system with username and PIN
 
-## Project Structure
+- **User Interface**
+  - Modern, clean GUI built with Java Swing
+  - Real-time account information display
+  - Transaction history tables with sorting
+  - Responsive and intuitive design
+
+### Admin Features
+- **Account Management**
+  - Search accounts by number or name
+  - Freeze/unfreeze accounts
+  - Close accounts
+  - View all accounts
+
+- **Bank Statistics**
+  - Total accounts count
+  - Total bank balance
+  - Highest balance holder
+  - Account status breakdown (Active, Frozen, Closed)
+
+## 🛠️ Technologies Used
+
+- **Java** - Core programming language
+- **Java Swing** - GUI framework
+- **HashMap** - Efficient O(1) account lookup
+- **File I/O** - Persistent data storage
+- **SHA-256** - PIN hashing for security
+
+## 📋 Prerequisites
+
+- Java JDK 8 or higher
+- Any Java-compatible IDE (IntelliJ IDEA, Eclipse, VS Code) or command line
+
+## 🔧 Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd dsa-project
+   ```
+
+2. **Compile the project**
+   ```bash
+   javac -d out -cp out src/main/java/com/banking/*.java src/main/java/com/banking/ui/*.java src/main/java/com/banking/Main.java
+   ```
+
+3. **Run the application**
+   ```bash
+   java -cp out com.banking.Main
+   ```
+
+### Using an IDE
+
+1. Import the project into your IDE (IntelliJ IDEA, Eclipse, etc.)
+2. Set `src/main/java` as the source root
+3. Run the `Main.java` class from `com.banking` package
+
+## 📖 Usage
+
+### Creating an Account
+
+1. Launch the application
+2. Click "Create New Account" on the login screen
+3. Enter:
+   - Username (must be unique)
+   - Holder Name
+   - Initial Balance
+   - PIN (for account security)
+4. Your account number will be auto-generated and displayed
+
+### Logging In
+
+1. Enter your username and PIN on the login screen
+2. Click "Login" to access your dashboard
+3. For admin access, click "Admin Login" and enter admin credentials
+
+### Performing Transactions
+
+- **Deposit**: Click "Deposit Money", enter the amount
+- **Withdraw**: Click "Withdraw Money", enter the amount
+- **Transfer**: Click "Transfer Funds", enter receiver account number and amount
+- **View History**: Click "View Transaction History" to see all transactions
+
+### Admin Operations
+
+1. Login as admin
+2. Search accounts using the search panel
+3. Use account actions to freeze, unfreeze, or close accounts
+4. View bank statistics in the statistics panel
+
+## 📁 Project Structure
 
 ```
 dsa-project/
@@ -25,114 +121,96 @@ dsa-project/
 │       └── java/
 │           └── com/
 │               └── banking/
-│                   ├── Account.java          # Account entity class
-│                   ├── BankingSystem.java    # Core banking logic with HashMap
-│                   └── Main.java            # CLI interface
-└── README.md
+│                   ├── Account.java              # Account entity with status management
+│                   ├── AccountStatus.java        # Account status enum
+│                   ├── BankingSystem.java        # Core banking logic with HashMap
+│                   ├── FileHandler.java          # File persistence layer
+│                   ├── Main.java                 # Application entry point
+│                   └── Transaction.java          # Transaction entity
+│                   └── ui/
+│                       ├── AccountInfoPanel.java      # Account information display
+│                       ├── AdminDashboard.java       # Admin interface
+│                       ├── CreateAccountDialog.java   # Account creation dialog
+│                       ├── MainWindow.java            # Login window
+│                       ├── TransactionDialog.java     # Transaction dialogs
+│                       ├── TransactionHistoryPanel.java # Transaction history view
+│                       └── UserDashboard.java         # User dashboard
+├── accounts.txt          # Account data storage (auto-generated)
+├── transactions.txt      # Transaction data storage (auto-generated)
+├── .gitignore           # Git ignore rules
+└── README.md            # Project documentation
 ```
 
-## Classes
+## 🏗️ Architecture
 
-### 1. Account Class
+### Core Components
 
-Represents a bank account with:
+- **Account**: Represents a bank account with username, holder name, balance, status, and hashed PIN
+- **BankingSystem**: Manages all accounts using HashMap for O(1) lookup, handles transactions, and provides business logic
+- **FileHandler**: Handles persistence by saving/loading accounts and transactions to/from text files
+- **Transaction**: Represents financial transactions (DEPOSIT, WITHDRAW, TRANSFER_IN, TRANSFER_OUT)
 
-- Account number (unique identifier)
-- Holder name
-- Balance
-- Methods: `deposit()`, `withdraw()`, `getBalance()`
+### Data Structures
 
-### 2. BankingSystem Class
+- **HashMap<String, Account>**: Stores accounts with account number as key for efficient lookup
+- **HashMap<String, String>**: Maps usernames to account numbers for login
+- **HashMap<String, List<Transaction>>**: Stores transaction history per account
 
-Manages all accounts using HashMap:
+## 🔐 Security Features
 
-- Key: Account number (String)
-- Value: Account object
-- Methods: `createAccount()`, `deposit()`, `withdraw()`, `getBalance()`, `isValidTransaction()`, `displayAccountInfo()`
+- PIN hashing using SHA-256 algorithm
+- Account status validation before transactions
+- Balance validation for withdrawals and transfers
+- Username uniqueness enforcement
 
-### 3. Main Class
+## 💾 Data Persistence
 
-Provides CLI interface with menu-driven operations:
+The application automatically saves all data to:
+- `accounts.txt` - Account information
+- `transactions.txt` - Transaction history
 
-- Create Account
-- Deposit Money
-- Withdraw Money
-- Check Balance
-- Display Account Information
-- Display All Accounts
-- Validate Transaction
-- Exit
+Data is loaded automatically on application startup and saved after every operation.
 
-## How to Compile and Run
+## 🎨 UI Features
 
-### Prerequisites
+- Modern card-based design for account information
+- Color-coded account status (Blue: Active, Orange: Frozen, Gray: Closed)
+- Real-time balance display in green
+- Transaction tables with alternating row colors
+- Responsive layouts with proper spacing and typography
 
-- Java JDK 8 or higher installed
-- Command line/terminal access
+## 📝 Key Design Decisions
 
-### Compilation
+- **HashMap Storage**: Provides O(1) average-case time complexity for account lookups
+- **File-based Persistence**: Simple, reliable storage without database dependencies
+- **Username-based Authentication**: User-friendly login system with auto-generated account numbers
+- **Transaction History**: Complete audit trail of all financial operations
+- **Status Management**: Account status system for administrative control
 
-```bash
-# Navigate to project root
-cd dsa-project
+## 🐛 Troubleshooting
 
-# Compile Java files
-javac -d out src/main/java/com/banking/*.java
-```
+### Application won't start
+- Ensure Java JDK 8+ is installed
+- Check that all source files are present
+- Verify compilation completed without errors
 
-### Running the Application
+### Login issues
+- Verify username is correct (case-insensitive)
+- Check that account is not frozen or closed
+- Ensure PIN is entered correctly
 
-```bash
-# Run the application
-java -cp out com.banking.Main
-```
+### Data not persisting
+- Check file permissions in the project directory
+- Ensure `accounts.txt` and `transactions.txt` are not read-only
 
-### Alternative: Using Maven/Gradle structure
+## 📄 License
 
-If you prefer to use an IDE like IntelliJ IDEA or Eclipse:
+This project is open source and available for educational purposes.
 
-1. Import the project
-2. Set `src/main/java` as source root
-3. Run `Main.java`
+## 🤝 Contributing
 
-## Usage Example
+Contributions, issues, and feature requests are welcome. Please feel free to check the issues page.
 
-```
-========================================
-   Welcome to Banking System (CLI)
-   Using HashMap for Account Storage
-========================================
+---
 
---- Banking System Menu ---
-1. Create Account
-2. Deposit Money
-3. Withdraw Money
-4. Check Balance
-5. Display Account Information
-6. Display All Accounts
-7. Validate Transaction
-8. Exit
-----------------------------
-Enter your choice: 1
-
---- Create New Account ---
-Enter Account Number: ACC001
-Enter Holder Name: John Doe
-Enter Initial Balance: $1000
-Account created successfully!
-Account Number: ACC001 | Holder: John Doe | Balance: $1000.00
-```
-
-## Key Features Implementation
-
-1. **HashMap Storage**: Account numbers are used as keys for O(1) average-case lookup
-2. **Transaction Validation**: Checks account existence and sufficient funds before withdrawal
-3. **Error Handling**: Comprehensive validation for all inputs and operations
-4. **User-Friendly CLI**: Menu-driven interface with clear prompts and messages
-
-## Design Decisions
-
-- **HashMap for Storage**: Provides fast O(1) average-case time complexity for account lookups
-- **Separate Classes**: Follows object-oriented principles with clear separation of concerns
-- **Input Validation**: All user inputs are validated to prevent errors
-- **Exception Handling**: Proper error messages guide users when operations fail
+**Note**: This is a desktop application. Data files (`accounts.txt` and `transactions.txt`) are stored locally in the project directory.

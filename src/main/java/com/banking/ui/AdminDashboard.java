@@ -60,21 +60,21 @@ public class AdminDashboard extends JFrame {
         });
         headerPanel.add(exitButton, BorderLayout.EAST);
 
-        JPanel buttonPanel = new JPanel(new GridLayout(4, 2, 10, 10));
+        JPanel buttonPanel = new JPanel(new GridLayout(5, 1, 10, 10));
         buttonPanel.setBackground(new Color(255, 255, 255));
         buttonPanel.setBorder(BorderFactory.createTitledBorder(
-            BorderFactory.createEtchedBorder(), "Admin Operations",
+            BorderFactory.createEtchedBorder(), "Account Actions",
             javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
             javax.swing.border.TitledBorder.DEFAULT_POSITION,
             new Font("Arial", Font.BOLD, 13),
             new Color(0, 70, 150)));
-        buttonPanel.setPreferredSize(new Dimension(250, 0));
+        buttonPanel.setPreferredSize(new Dimension(220, 0));
 
         JButton viewAllButton = createAdminButton("View All Accounts", new Color(0, 102, 204));
         viewAllButton.addActionListener(e -> loadAllAccounts());
 
-        JButton searchButton = createAdminButton("Search Account", new Color(0, 102, 204));
-        searchButton.addActionListener(e -> searchAccounts());
+        JButton viewFrozenButton = createAdminButton("View Frozen Accounts", new Color(0, 102, 204));
+        viewFrozenButton.addActionListener(e -> viewFrozenAccounts());
 
         JButton freezeButton = createAdminButton("Freeze Account", new Color(0, 102, 204));
         freezeButton.addActionListener(e -> freezeAccount());
@@ -85,34 +85,35 @@ public class AdminDashboard extends JFrame {
         JButton closeAccountButton = createAdminButton("Close Account", new Color(0, 102, 204));
         closeAccountButton.addActionListener(e -> closeAccount());
 
-        JButton viewFrozenButton = createAdminButton("View Frozen Accounts", new Color(0, 102, 204));
-        viewFrozenButton.addActionListener(e -> viewFrozenAccounts());
-
-        JButton statisticsButton = createAdminButton("Bank Statistics", new Color(0, 102, 204));
-        statisticsButton.addActionListener(e -> updateStatistics());
-
         buttonPanel.add(viewAllButton);
-        buttonPanel.add(searchButton);
+        buttonPanel.add(viewFrozenButton);
         buttonPanel.add(freezeButton);
         buttonPanel.add(unfreezeButton);
         buttonPanel.add(closeAccountButton);
-        buttonPanel.add(viewFrozenButton);
-        buttonPanel.add(statisticsButton);
 
-        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
         searchPanel.setBackground(new Color(255, 255, 255));
         searchPanel.setBorder(BorderFactory.createTitledBorder(
-            BorderFactory.createEtchedBorder(), "Search",
+            BorderFactory.createEtchedBorder(), "Search Accounts",
             javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
             javax.swing.border.TitledBorder.DEFAULT_POSITION,
             new Font("Arial", Font.BOLD, 12),
             new Color(0, 70, 150)));
-        searchField = new JTextField(15);
+        searchField = new JTextField(20);
+        searchField.setPreferredSize(new Dimension(200, 30));
+        searchField.setFont(new Font("Arial", Font.PLAIN, 12));
+        searchField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
+            BorderFactory.createEmptyBorder(5, 8, 5, 8)));
+        searchField.addActionListener(e -> searchAccounts());
         searchTypeCombo = new JComboBox<>(new String[]{"By Number", "By Name"});
+        searchTypeCombo.setPreferredSize(new Dimension(120, 30));
+        searchTypeCombo.setFont(new Font("Arial", Font.PLAIN, 12));
         JButton searchNowButton = new JButton("Search");
+        searchNowButton.setPreferredSize(new Dimension(100, 30));
         searchNowButton.setBackground(new Color(0, 102, 204));
         searchNowButton.setForeground(Color.WHITE);
-        searchNowButton.setFont(new Font("Arial", Font.BOLD, 11));
+        searchNowButton.setFont(new Font("Arial", Font.BOLD, 12));
         searchNowButton.setFocusPainted(false);
         searchNowButton.setOpaque(true);
         searchNowButton.setContentAreaFilled(true);
@@ -123,7 +124,6 @@ public class AdminDashboard extends JFrame {
         searchLabel.setFont(new Font("Arial", Font.BOLD, 12));
         searchLabel.setForeground(new Color(50, 50, 50));
         searchPanel.add(searchLabel);
-        searchField.setFont(new Font("Arial", Font.PLAIN, 12));
         searchPanel.add(searchField);
         searchPanel.add(searchTypeCombo);
         searchPanel.add(searchNowButton);
@@ -163,9 +163,12 @@ public class AdminDashboard extends JFrame {
         JScrollPane statisticsScrollPane = new JScrollPane(statisticsArea);
 
         JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
+        centerPanel.setBackground(new Color(245, 245, 250));
         centerPanel.add(searchPanel, BorderLayout.NORTH);
         centerPanel.add(tableScrollPane, BorderLayout.CENTER);
         centerPanel.add(statisticsScrollPane, BorderLayout.SOUTH);
+        
+        statisticsArea.setPreferredSize(new Dimension(0, 120));
 
         mainPanel.add(headerPanel, BorderLayout.NORTH);
         mainPanel.add(buttonPanel, BorderLayout.WEST);
@@ -176,7 +179,7 @@ public class AdminDashboard extends JFrame {
 
     private JButton createAdminButton(String text, Color bgColor) {
         JButton button = new JButton(text);
-        button.setPreferredSize(new Dimension(200, 40));
+        button.setPreferredSize(new Dimension(200, 45));
         button.setBackground(bgColor);
         button.setForeground(Color.WHITE);
         button.setFont(new Font("Arial", Font.BOLD, 12));

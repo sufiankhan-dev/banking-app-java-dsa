@@ -136,8 +136,8 @@ public class FileHandler {
     }
 
     private static Transaction lineToTransaction(String line) {
-        String[] parts = line.split("\\|\\|\\|");
-        if (parts.length != 6) {
+        String[] parts = line.split("\\|\\|\\|", -1);
+        if (parts.length < 5 || parts.length > 6) {
             throw new IllegalArgumentException("Invalid transaction format");
         }
         
@@ -146,7 +146,7 @@ public class FileHandler {
         Transaction.TransactionType type = Transaction.TransactionType.valueOf(parts[2]);
         double amount = Double.parseDouble(parts[3]);
         LocalDateTime date = LocalDateTime.parse(parts[4], DATE_FORMATTER);
-        String relatedAccount = parts[5].isEmpty() ? null : parts[5];
+        String relatedAccount = (parts.length == 6 && !parts[5].isEmpty()) ? parts[5] : null;
         
         Transaction transaction;
         if (relatedAccount != null) {

@@ -22,7 +22,7 @@ public class MainWindow extends JFrame {
     private void initializeUI() {
         setTitle("Banking System - Login");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(500, 400);
+        setSize(550, 450);
         setLocationRelativeTo(null);
         setResizable(false);
 
@@ -57,8 +57,16 @@ public class MainWindow extends JFrame {
         loginPanel.add(accountLabel, gbc);
 
         gbc.gridx = 1;
-        accountNumberField = new JTextField(20);
+        accountNumberField = new JTextField(25);
+        accountNumberField.setPreferredSize(new Dimension(200, 30));
         accountNumberField.setFont(new Font("Arial", Font.PLAIN, 12));
+        accountNumberField.setForeground(Color.BLACK);
+        accountNumberField.setBackground(Color.WHITE);
+        accountNumberField.setEnabled(true);
+        accountNumberField.setEditable(true);
+        accountNumberField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
+            BorderFactory.createEmptyBorder(5, 8, 5, 8)));
         loginPanel.add(accountNumberField, gbc);
 
         gbc.gridx = 0;
@@ -69,7 +77,15 @@ public class MainWindow extends JFrame {
         loginPanel.add(pinLabel, gbc);
 
         gbc.gridx = 1;
-        pinField = new JPasswordField(20);
+        pinField = new JPasswordField(25);
+        pinField.setPreferredSize(new Dimension(200, 30));
+        pinField.setForeground(Color.BLACK);
+        pinField.setBackground(Color.WHITE);
+        pinField.setEnabled(true);
+        pinField.setEditable(true);
+        pinField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
+            BorderFactory.createEmptyBorder(5, 8, 5, 8)));
         loginPanel.add(pinField, gbc);
 
         gbc.gridx = 0;
@@ -88,6 +104,41 @@ public class MainWindow extends JFrame {
         loginButton.setBorder(BorderFactory.createRaisedBevelBorder());
         loginButton.addActionListener(new LoginActionListener());
         loginPanel.add(loginButton, gbc);
+
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        gbc.insets = new Insets(15, 10, 5, 10);
+        gbc.anchor = GridBagConstraints.CENTER;
+        JPanel optionsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 5));
+        optionsPanel.setBackground(new Color(255, 255, 255));
+        optionsPanel.setOpaque(true);
+        
+        JButton createAccountLink = new JButton("Create New Account");
+        createAccountLink.setBorderPainted(false);
+        createAccountLink.setContentAreaFilled(false);
+        createAccountLink.setForeground(new Color(0, 102, 204));
+        createAccountLink.setFont(new Font("Arial", Font.PLAIN, 12));
+        createAccountLink.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        createAccountLink.addActionListener(e -> {
+            CreateAccountDialog dialog = new CreateAccountDialog(this);
+            dialog.setVisible(true);
+        });
+        optionsPanel.add(createAccountLink);
+        
+        JLabel separator = new JLabel("|");
+        separator.setForeground(new Color(150, 150, 150));
+        optionsPanel.add(separator);
+        
+        JButton adminLoginLink = new JButton("Admin Login");
+        adminLoginLink.setBorderPainted(false);
+        adminLoginLink.setContentAreaFilled(false);
+        adminLoginLink.setForeground(new Color(0, 102, 204));
+        adminLoginLink.setFont(new Font("Arial", Font.PLAIN, 12));
+        adminLoginLink.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        adminLoginLink.addActionListener(new AdminLoginActionListener());
+        optionsPanel.add(adminLoginLink);
+        
+        loginPanel.add(optionsPanel, gbc);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         buttonPanel.setBackground(new Color(245, 245, 250));

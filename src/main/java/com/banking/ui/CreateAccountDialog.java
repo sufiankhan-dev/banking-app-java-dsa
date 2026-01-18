@@ -22,6 +22,7 @@ public class CreateAccountDialog extends JDialog {
     private JLabel pinError;
     private JButton createButton;
     private BankingSystem bankingSystem;
+    private JPanel formPanel;
 
     public CreateAccountDialog(JFrame parent) {
         super(parent, "Create New Account", true);
@@ -30,7 +31,7 @@ public class CreateAccountDialog extends JDialog {
     }
 
     private void initializeUI() {
-        setSize(450, 450);
+        setSize(600, 600);
         setLocationRelativeTo(getParent());
         setResizable(false);
 
@@ -38,11 +39,12 @@ public class CreateAccountDialog extends JDialog {
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         mainPanel.setBackground(new Color(245, 245, 250));
 
-        JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel = new JPanel(new GridBagLayout());
         formPanel.setBackground(new Color(255, 255, 255));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(8, 8, 8, 8);
         gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.NONE;
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -51,81 +53,172 @@ public class CreateAccountDialog extends JDialog {
         accountLabel.setForeground(new Color(50, 50, 50));
         formPanel.add(accountLabel, gbc);
         gbc.gridx = 1;
-        accountNumberField = new JTextField(20);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        accountNumberField = new JTextField(25);
+        accountNumberField.setMinimumSize(new Dimension(250, 30));
+        accountNumberField.setPreferredSize(new Dimension(250, 30));
+        accountNumberField.setMaximumSize(new Dimension(300, 30));
         accountNumberField.setFont(new Font("Arial", Font.PLAIN, 12));
+        accountNumberField.setForeground(Color.BLACK);
+        accountNumberField.setBackground(Color.WHITE);
+        accountNumberField.setEnabled(true);
+        accountNumberField.setEditable(true);
+        accountNumberField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
+            BorderFactory.createEmptyBorder(5, 8, 5, 8)));
         accountNumberField.getDocument().addDocumentListener(new AccountNumberValidator());
         formPanel.add(accountNumberField, gbc);
-        gbc.gridx = 2;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
         accountNumberError = new JLabel(" ");
         accountNumberError.setForeground(Color.RED);
         accountNumberError.setFont(new Font("Arial", Font.PLAIN, 11));
-        accountNumberError.setPreferredSize(new Dimension(200, 20));
+        accountNumberError.setPreferredSize(new Dimension(200, 0));
+        accountNumberError.setMinimumSize(new Dimension(200, 0));
+        accountNumberError.setMaximumSize(new Dimension(200, 0));
         formPanel.add(accountNumberError, gbc);
+        gbc.gridwidth = 1;
 
         gbc.gridx = 0;
-        gbc.gridy = 1;
+        gbc.gridy = 2;
         JLabel holderLabel = new JLabel("Holder Name:");
         holderLabel.setFont(new Font("Arial", Font.BOLD, 12));
         holderLabel.setForeground(new Color(50, 50, 50));
         formPanel.add(holderLabel, gbc);
         gbc.gridx = 1;
-        holderNameField = new JTextField(20);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        holderNameField = new JTextField(25);
+        holderNameField.setMinimumSize(new Dimension(250, 30));
+        holderNameField.setPreferredSize(new Dimension(250, 30));
+        holderNameField.setMaximumSize(new Dimension(300, 30));
         holderNameField.setFont(new Font("Arial", Font.PLAIN, 12));
+        holderNameField.setForeground(Color.BLACK);
+        holderNameField.setBackground(Color.WHITE);
+        holderNameField.setEnabled(true);
+        holderNameField.setEditable(true);
+        holderNameField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
+            BorderFactory.createEmptyBorder(5, 8, 5, 8)));
         holderNameField.getDocument().addDocumentListener(new HolderNameValidator());
         formPanel.add(holderNameField, gbc);
-        gbc.gridx = 2;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
         holderNameError = new JLabel(" ");
         holderNameError.setForeground(Color.RED);
         holderNameError.setFont(new Font("Arial", Font.PLAIN, 11));
-        holderNameError.setPreferredSize(new Dimension(200, 20));
+        holderNameError.setPreferredSize(new Dimension(200, 0));
+        holderNameError.setMinimumSize(new Dimension(200, 0));
+        holderNameError.setMaximumSize(new Dimension(200, 0));
         formPanel.add(holderNameError, gbc);
+        gbc.gridwidth = 1;
 
         gbc.gridx = 0;
-        gbc.gridy = 2;
+        gbc.gridy = 4;
         JLabel balanceLabel = new JLabel("Initial Balance:");
         balanceLabel.setFont(new Font("Arial", Font.BOLD, 12));
         balanceLabel.setForeground(new Color(50, 50, 50));
         formPanel.add(balanceLabel, gbc);
         gbc.gridx = 1;
-        balanceField = new JTextField(20);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        balanceField = new JTextField(25);
+        balanceField.setMinimumSize(new Dimension(250, 30));
+        balanceField.setPreferredSize(new Dimension(250, 30));
+        balanceField.setMaximumSize(new Dimension(300, 30));
         balanceField.setFont(new Font("Arial", Font.PLAIN, 12));
+        balanceField.setForeground(Color.BLACK);
+        balanceField.setBackground(Color.WHITE);
+        balanceField.setEnabled(true);
+        balanceField.setEditable(true);
+        balanceField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
+            BorderFactory.createEmptyBorder(5, 8, 5, 8)));
         balanceField.getDocument().addDocumentListener(new BalanceValidator());
         formPanel.add(balanceField, gbc);
-        gbc.gridx = 2;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
+        gbc.gridx = 0;
+        gbc.gridy = 5;
+        gbc.gridwidth = 2;
         balanceError = new JLabel(" ");
         balanceError.setForeground(Color.RED);
         balanceError.setFont(new Font("Arial", Font.PLAIN, 11));
-        balanceError.setPreferredSize(new Dimension(200, 20));
+        balanceError.setPreferredSize(new Dimension(200, 0));
+        balanceError.setMinimumSize(new Dimension(200, 0));
+        balanceError.setMaximumSize(new Dimension(200, 0));
         formPanel.add(balanceError, gbc);
+        gbc.gridwidth = 1;
 
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 6;
         JLabel pinLabel = new JLabel("PIN:");
         pinLabel.setFont(new Font("Arial", Font.BOLD, 12));
         pinLabel.setForeground(new Color(50, 50, 50));
         formPanel.add(pinLabel, gbc);
         gbc.gridx = 1;
-        pinField = new JPasswordField(20);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        pinField = new JPasswordField(25);
+        pinField.setMinimumSize(new Dimension(250, 30));
+        pinField.setPreferredSize(new Dimension(250, 30));
+        pinField.setMaximumSize(new Dimension(300, 30));
         pinField.setFont(new Font("Arial", Font.PLAIN, 12));
+        pinField.setForeground(Color.BLACK);
+        pinField.setBackground(Color.WHITE);
+        pinField.setEnabled(true);
+        pinField.setEditable(true);
+        pinField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
+            BorderFactory.createEmptyBorder(5, 8, 5, 8)));
         pinField.getDocument().addDocumentListener(new PinValidator());
         formPanel.add(pinField, gbc);
-        gbc.gridx = 2;
-        pinError = new JLabel(" ");
-        pinError.setForeground(Color.RED);
-        pinError.setFont(new Font("Arial", Font.PLAIN, 11));
-        pinError.setPreferredSize(new Dimension(200, 20));
-        formPanel.add(pinError, gbc);
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
 
         gbc.gridx = 0;
-        gbc.gridy = 4;
+        gbc.gridy = 8;
         JLabel confirmPinLabel = new JLabel("Confirm PIN:");
         confirmPinLabel.setFont(new Font("Arial", Font.BOLD, 12));
         confirmPinLabel.setForeground(new Color(50, 50, 50));
         formPanel.add(confirmPinLabel, gbc);
         gbc.gridx = 1;
-        confirmPinField = new JPasswordField(20);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+        confirmPinField = new JPasswordField(25);
+        confirmPinField.setMinimumSize(new Dimension(250, 30));
+        confirmPinField.setPreferredSize(new Dimension(250, 30));
+        confirmPinField.setMaximumSize(new Dimension(300, 30));
+        confirmPinField.setForeground(Color.BLACK);
+        confirmPinField.setBackground(Color.WHITE);
+        confirmPinField.setEnabled(true);
+        confirmPinField.setEditable(true);
+        confirmPinField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
+            BorderFactory.createEmptyBorder(5, 8, 5, 8)));
         confirmPinField.getDocument().addDocumentListener(new PinValidator());
         formPanel.add(confirmPinField, gbc);
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.weightx = 0.0;
+        gbc.gridx = 0;
+        gbc.gridy = 9;
+        gbc.gridwidth = 2;
+        pinError = new JLabel(" ");
+        pinError.setForeground(Color.RED);
+        pinError.setFont(new Font("Arial", Font.PLAIN, 11));
+        pinError.setPreferredSize(new Dimension(200, 0));
+        pinError.setMinimumSize(new Dimension(200, 0));
+        pinError.setMaximumSize(new Dimension(200, 0));
+        // PIN error label is shared for both PIN and Confirm PIN fields
+        formPanel.add(pinError, gbc);
+        gbc.gridwidth = 1;
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         buttonPanel.setBackground(new Color(245, 245, 250));
@@ -161,6 +254,10 @@ public class CreateAccountDialog extends JDialog {
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         add(mainPanel);
+        
+        SwingUtilities.invokeLater(() -> {
+            accountNumberField.requestFocus();
+        });
     }
 
     private void validateForm() {
@@ -196,11 +293,22 @@ public class CreateAccountDialog extends JDialog {
             String accountNumber = accountNumberField.getText().trim();
             if (accountNumber.isEmpty()) {
                 accountNumberError.setText("Account number cannot be empty");
+                accountNumberError.setPreferredSize(new Dimension(200, 20));
+                accountNumberError.setMinimumSize(new Dimension(200, 20));
+                accountNumberError.setMaximumSize(new Dimension(200, 20));
             } else if (bankingSystem.accountExists(accountNumber)) {
                 accountNumberError.setText("Account number already exists");
+                accountNumberError.setPreferredSize(new Dimension(200, 20));
+                accountNumberError.setMinimumSize(new Dimension(200, 20));
+                accountNumberError.setMaximumSize(new Dimension(200, 20));
             } else {
                 accountNumberError.setText(" ");
+                accountNumberError.setPreferredSize(new Dimension(200, 0));
+                accountNumberError.setMinimumSize(new Dimension(200, 0));
+                accountNumberError.setMaximumSize(new Dimension(200, 0));
             }
+            formPanel.revalidate();
+            formPanel.repaint();
             validateForm();
         }
     }
@@ -225,9 +333,17 @@ public class CreateAccountDialog extends JDialog {
             String holderName = holderNameField.getText().trim();
             if (holderName.isEmpty()) {
                 holderNameError.setText("Holder name cannot be empty");
+                holderNameError.setPreferredSize(new Dimension(200, 20));
+                holderNameError.setMinimumSize(new Dimension(200, 20));
+                holderNameError.setMaximumSize(new Dimension(200, 20));
             } else {
                 holderNameError.setText(" ");
+                holderNameError.setPreferredSize(new Dimension(200, 0));
+                holderNameError.setMinimumSize(new Dimension(200, 0));
+                holderNameError.setMaximumSize(new Dimension(200, 0));
             }
+            formPanel.revalidate();
+            formPanel.repaint();
             validateForm();
         }
     }
@@ -252,18 +368,32 @@ public class CreateAccountDialog extends JDialog {
             String balanceText = balanceField.getText().trim();
             if (balanceText.isEmpty()) {
                 balanceError.setText("Balance cannot be empty");
+                balanceError.setPreferredSize(new Dimension(200, 20));
+                balanceError.setMinimumSize(new Dimension(200, 20));
+                balanceError.setMaximumSize(new Dimension(200, 20));
             } else {
                 try {
                     double balance = Double.parseDouble(balanceText);
                     if (balance < 0) {
                         balanceError.setText("Balance cannot be negative");
+                        balanceError.setPreferredSize(new Dimension(200, 20));
+                        balanceError.setMinimumSize(new Dimension(200, 20));
+                        balanceError.setMaximumSize(new Dimension(200, 20));
                     } else {
                         balanceError.setText(" ");
+                        balanceError.setPreferredSize(new Dimension(200, 0));
+                        balanceError.setMinimumSize(new Dimension(200, 0));
+                        balanceError.setMaximumSize(new Dimension(200, 0));
                     }
                 } catch (NumberFormatException ex) {
                     balanceError.setText("Invalid number format");
+                    balanceError.setPreferredSize(new Dimension(200, 20));
+                    balanceError.setMinimumSize(new Dimension(200, 20));
+                    balanceError.setMaximumSize(new Dimension(200, 20));
                 }
             }
+            formPanel.revalidate();
+            formPanel.repaint();
             validateForm();
         }
     }
@@ -290,11 +420,22 @@ public class CreateAccountDialog extends JDialog {
             
             if (pin.isEmpty()) {
                 pinError.setText("PIN cannot be empty");
+                pinError.setPreferredSize(new Dimension(200, 20));
+                pinError.setMinimumSize(new Dimension(200, 20));
+                pinError.setMaximumSize(new Dimension(200, 20));
             } else if (!pin.equals(confirmPin)) {
                 pinError.setText("PINs do not match");
+                pinError.setPreferredSize(new Dimension(200, 20));
+                pinError.setMinimumSize(new Dimension(200, 20));
+                pinError.setMaximumSize(new Dimension(200, 20));
             } else {
                 pinError.setText(" ");
+                pinError.setPreferredSize(new Dimension(200, 0));
+                pinError.setMinimumSize(new Dimension(200, 0));
+                pinError.setMaximumSize(new Dimension(200, 0));
             }
+            formPanel.revalidate();
+            formPanel.repaint();
             validateForm();
         }
     }

@@ -7,6 +7,7 @@ import com.banking.Transaction;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class TransactionHistoryPanel extends JPanel {
@@ -38,41 +39,71 @@ public class TransactionHistoryPanel extends JPanel {
             }
         };
 
-        transactionTable = new JTable(tableModel);
+        transactionTable = new JTable(tableModel) {
+            @Override
+            public Component prepareRenderer(javax.swing.table.TableCellRenderer renderer, int row, int column) {
+                Component c = super.prepareRenderer(renderer, row, column);
+                if (!isRowSelected(row)) {
+                    c.setBackground(row % 2 == 0 ? Color.WHITE : new Color(248, 248, 252));
+                } else {
+                    c.setBackground(new Color(0, 102, 204));
+                    c.setForeground(Color.WHITE);
+                }
+                return c;
+            }
+        };
         transactionTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        transactionTable.setRowHeight(25);
+        transactionTable.setRowHeight(32);
         transactionTable.getTableHeader().setReorderingAllowed(false);
         transactionTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         transactionTable.setBackground(Color.WHITE);
         transactionTable.setForeground(new Color(30, 30, 30));
+        transactionTable.setSelectionBackground(new Color(0, 102, 204));
+        transactionTable.setSelectionForeground(Color.WHITE);
         transactionTable.getTableHeader().setBackground(new Color(0, 102, 204));
         transactionTable.getTableHeader().setForeground(Color.WHITE);
-        transactionTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
-        transactionTable.setFont(new Font("Arial", Font.PLAIN, 11));
-        transactionTable.setGridColor(new Color(200, 200, 200));
+        transactionTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 13));
+        transactionTable.getTableHeader().setPreferredSize(new Dimension(0, 40));
+        transactionTable.setFont(new Font("Arial", Font.PLAIN, 12));
+        transactionTable.setGridColor(new Color(230, 230, 235));
+        transactionTable.setShowGrid(true);
+        transactionTable.setIntercellSpacing(new Dimension(0, 0));
         
-        transactionTable.getColumnModel().getColumn(0).setPreferredWidth(100);
-        transactionTable.getColumnModel().getColumn(1).setPreferredWidth(120);
-        transactionTable.getColumnModel().getColumn(2).setPreferredWidth(100);
-        transactionTable.getColumnModel().getColumn(3).setPreferredWidth(180);
+        transactionTable.getColumnModel().getColumn(0).setPreferredWidth(120);
+        transactionTable.getColumnModel().getColumn(1).setPreferredWidth(140);
+        transactionTable.getColumnModel().getColumn(2).setPreferredWidth(120);
+        transactionTable.getColumnModel().getColumn(3).setPreferredWidth(200);
         transactionTable.getColumnModel().getColumn(4).setPreferredWidth(150);
 
         JScrollPane scrollPane = new JScrollPane(transactionTable);
-        scrollPane.setPreferredSize(new Dimension(750, 350));
+        scrollPane.setPreferredSize(new Dimension(750, 400));
         scrollPane.setBackground(Color.WHITE);
+        scrollPane.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(220, 220, 225), 1),
+            BorderFactory.createEmptyBorder(5, 5, 5, 5)));
 
-        JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
+        JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 12, 12));
         filterPanel.setBackground(new Color(255, 255, 255));
+        filterPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(220, 220, 225), 1),
+            BorderFactory.createEmptyBorder(12, 15, 12, 15)));
         JLabel filterLabel = new JLabel("Show Last N Transactions:");
-        filterLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        filterLabel.setFont(new Font("Arial", Font.BOLD, 13));
         filterLabel.setForeground(new Color(50, 50, 50));
         filterPanel.add(filterLabel);
-        filterField = new JTextField(10);
+        filterField = new JTextField(12);
+        filterField.setPreferredSize(new Dimension(100, 30));
+        filterField.setFont(new Font("Arial", Font.PLAIN, 12));
+        filterField.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
+            BorderFactory.createEmptyBorder(5, 8, 5, 8)));
+        filterField.addActionListener(e -> filterTransactions());
         filterPanel.add(filterField);
         filterButton = new JButton("Filter");
+        filterButton.setPreferredSize(new Dimension(90, 30));
         filterButton.setBackground(new Color(0, 102, 204));
         filterButton.setForeground(Color.WHITE);
-        filterButton.setFont(new Font("Arial", Font.BOLD, 11));
+        filterButton.setFont(new Font("Arial", Font.BOLD, 12));
         filterButton.setFocusPainted(false);
         filterButton.setOpaque(true);
         filterButton.setContentAreaFilled(true);
@@ -81,9 +112,10 @@ public class TransactionHistoryPanel extends JPanel {
         filterButton.addActionListener(e -> filterTransactions());
         filterPanel.add(filterButton);
         showAllButton = new JButton("Show All");
+        showAllButton.setPreferredSize(new Dimension(100, 30));
         showAllButton.setBackground(new Color(0, 102, 204));
         showAllButton.setForeground(Color.WHITE);
-        showAllButton.setFont(new Font("Arial", Font.BOLD, 11));
+        showAllButton.setFont(new Font("Arial", Font.BOLD, 12));
         showAllButton.setFocusPainted(false);
         showAllButton.setOpaque(true);
         showAllButton.setContentAreaFilled(true);
@@ -93,8 +125,9 @@ public class TransactionHistoryPanel extends JPanel {
         filterPanel.add(showAllButton);
 
         JLabel titleLabel = new JLabel("Transaction History for Account: " + accountNumber);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 16));
         titleLabel.setForeground(new Color(0, 70, 150));
+        titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
         add(titleLabel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
         add(filterPanel, BorderLayout.SOUTH);
@@ -109,11 +142,14 @@ public class TransactionHistoryPanel extends JPanel {
             return;
         }
 
+        java.util.Collections.reverse(transactions);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");
         for (Transaction txn : transactions) {
             String txnId = txn.getTransactionId().substring(0, 8);
             String type = txn.getType().toString();
             String amount = "$" + String.format("%.2f", txn.getAmount());
-            String date = txn.getDate().toString();
+            String date = txn.getDate().format(formatter);
             String relatedAccount = txn.getRelatedAccount() != null ? txn.getRelatedAccount() : "-";
             
             tableModel.addRow(new Object[]{txnId, type, amount, date, relatedAccount});
@@ -151,11 +187,14 @@ public class TransactionHistoryPanel extends JPanel {
             tableModel.setRowCount(0);
             List<Transaction> transactions = bankingSystem.getLastNTransactions(accountNumber, n);
 
+            java.util.Collections.reverse(transactions);
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");
             for (Transaction txn : transactions) {
                 String txnId = txn.getTransactionId().substring(0, 8);
                 String type = txn.getType().toString();
                 String amount = "$" + String.format("%.2f", txn.getAmount());
-                String date = txn.getDate().toString();
+                String date = txn.getDate().format(formatter);
                 String relatedAccount = txn.getRelatedAccount() != null ? txn.getRelatedAccount() : "-";
                 
                 tableModel.addRow(new Object[]{txnId, type, amount, date, relatedAccount});

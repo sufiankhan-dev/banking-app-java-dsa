@@ -2,17 +2,23 @@ package com.banking.ui;
 
 import com.banking.BankingSystem;
 import com.banking.Main;
+import com.banking.Transaction;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class UserDashboard extends JFrame {
     private BankingSystem bankingSystem;
     private String accountNumber;
     private AccountInfoPanel accountInfoPanel;
     private JLabel statusLabel;
+    private JTable recentTransactionsTable;
+    private DefaultTableModel transactionTableModel;
 
     public UserDashboard() {
         this.bankingSystem = Main.bankingSystem;
@@ -216,9 +222,12 @@ public class UserDashboard extends JFrame {
         statusLabel.setFont(new Font("Arial", Font.PLAIN, 12));
         statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
 
-        JPanel centerContentPanel = new JPanel(new BorderLayout(10, 10));
+        JPanel centerContentPanel = new JPanel(new BorderLayout(15, 15));
         centerContentPanel.setBackground(new Color(245, 245, 250));
-        centerContentPanel.add(accountInfoPanel, BorderLayout.CENTER);
+        centerContentPanel.add(accountInfoPanel, BorderLayout.NORTH);
+        
+        JPanel transactionsPanel = createRecentTransactionsPanel();
+        centerContentPanel.add(transactionsPanel, BorderLayout.CENTER);
         
         mainPanel.add(headerPanel, BorderLayout.NORTH);
         mainPanel.add(buttonPanel, BorderLayout.WEST);
@@ -242,8 +251,93 @@ public class UserDashboard extends JFrame {
         return button;
     }
 
+    private JPanel createRecentTransactionsPanel() {
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.setBackground(new Color(245, 245, 250));
+        panel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createEtchedBorder(), "Recent Transactions (Last 5)",
+            javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+            javax.swing.border.TitledBorder.DEFAULT_POSITION,
+            new Font("Arial", Font.BOLD, 14),
+            new Color(0, 70, 150)));
+        
+        String[] columnNames = {"Type", "Amount", "Date", "Related Account"};
+        transactionTableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        
+        recentTransactionsTable = new JTable(transactionTableModel) {
+            @Override
+            public Component prepareRenderer(javax.swing.table.TableCellRenderer renderer, int row, int column) {
+                Component c = super.prepareRenderer(renderer, row, column);
+                if (!isRowSelected(row)) {
+                    c.setBackground(row % 2 == 0 ? Color.WHITE : new Color(248, 248, 252));
+                } else {
+                    c.setBackground(new Color(0, 102, 204));
+                    c.setForeground(Color.WHITE);
+                }
+                return c;
+            }
+        };
+        recentTransactionsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        recentTransactionsTable.setRowHeight(30);
+        recentTransactionsTable.getTableHeader().setReorderingAllowed(false);
+        recentTransactionsTable.setBackground(Color.WHITE);
+        recentTransactionsTable.setForeground(new Color(30, 30, 30));
+        recentTransactionsTable.setSelectionBackground(new Color(0, 102, 204));
+        recentTransactionsTable.setSelectionForeground(Color.WHITE);
+        recentTransactionsTable.getTableHeader().setBackground(new Color(0, 102, 204));
+        recentTransactionsTable.getTableHeader().setForeground(Color.WHITE);
+        recentTransactionsTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
+        recentTransactionsTable.getTableHeader().setPreferredSize(new Dimension(0, 35));
+        recentTransactionsTable.setFont(new Font("Arial", Font.PLAIN, 11));
+        recentTransactionsTable.setGridColor(new Color(230, 230, 235));
+        recentTransactionsTable.setShowGrid(true);
+        recentTransactionsTable.setIntercellSpacing(new Dimension(0, 0));
+        
+        recentTransactionsTable.getColumnModel().getColumn(0).setPreferredWidth(120);
+        recentTransactionsTable.getColumnModel().getColumn(1).setPreferredWidth(120);
+        recentTransactionsTable.getColumnModel().getColumn(2).setPreferredWidth(200);
+        recentTransactionsTable.getColumnModel().getColumn(3).setPreferredWidth(150);
+        
+        JScrollPane scrollPane = new JScrollPane(recentTransactionsTable);
+        scrollPane.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(220, 220, 225), 1),
+            BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        scrollPane.setPreferredSize(new Dimension(0, 200));
+        
+        panel.add(scrollPane, BorderLayout.CENTER);
+        
+        return panel;
+    }
+    
+    private void loadRecentTransactions() {
+        transactionTableModel.setRowCount(0);
+        List<Transaction> transactions = bankingSystem.getLastNTransactions(accountNumber, 5);
+        
+        if (transactions.isEmpty()) {
+            return;
+        }
+        
+        java.util.Collections.reverse(transactions);
+        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");
+        for (Transaction txn : transactions) {
+            String type = txn.getType().toString();
+            String amount = "$" + String.format("%.2f", txn.getAmount());
+            String date = txn.getDate().format(formatter);
+            String relatedAccount = txn.getRelatedAccount() != null ? txn.getRelatedAccount() : "-";
+            
+            transactionTableModel.addRow(new Object[]{type, amount, date, relatedAccount});
+        }
+    }
+
     public void refreshAccountInfo() {
         accountInfoPanel.refresh();
+        loadRecentTransactions();
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("MMM dd, yyyy HH:mm:ss");
         statusLabel.setText("Last updated: " + sdf.format(new java.util.Date()));
     }

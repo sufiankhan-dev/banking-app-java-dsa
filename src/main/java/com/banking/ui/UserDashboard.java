@@ -57,7 +57,7 @@ public class UserDashboard extends JFrame {
         });
         headerPanel.add(logoutButton, BorderLayout.EAST);
 
-        JPanel buttonPanel = new JPanel(new GridLayout(4, 2, 10, 10));
+        JPanel buttonPanel = new JPanel(new GridLayout(6, 1, 10, 10));
         buttonPanel.setBackground(new Color(255, 255, 255));
         buttonPanel.setBorder(BorderFactory.createTitledBorder(
             BorderFactory.createEtchedBorder(), "Banking Operations",

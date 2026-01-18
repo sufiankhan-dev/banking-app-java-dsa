@@ -107,12 +107,10 @@ public class BankingSystem {
         newUsername = newUsername.trim().toLowerCase();
         String oldUsername = account.getUsername().toLowerCase();
         
-        // Check if new username already exists (and it's not the current username)
         if (!oldUsername.equals(newUsername) && usernameToAccountNumber.containsKey(newUsername)) {
             throw new IllegalArgumentException("Username already exists: " + newUsername);
         }
         
-        // Update username mapping
         usernameToAccountNumber.remove(oldUsername);
         usernameToAccountNumber.put(newUsername, accountNumber);
         account.setUsername(newUsername);

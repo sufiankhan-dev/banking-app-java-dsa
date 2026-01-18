@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public class BankingSystem {
@@ -11,7 +12,7 @@ public class BankingSystem {
     private Map<String, String> usernameToAccountNumber; 
     private Map<String, List<Transaction>> transactions;
     private String currentLoggedInAccount;
-    private static int accountNumberCounter = 1000;
+    private static Random random = new Random();
 
     public BankingSystem() {
         this.accounts = FileHandler.loadAccounts();
@@ -24,18 +25,17 @@ public class BankingSystem {
                 usernameToAccountNumber.put(account.getUsername().toLowerCase(), account.getAccountNumber());
             }
         }
+    }
+    
+    private String generateAccountNumber() {
+        String generated;
         
-        int maxAccountNumber = accounts.values().stream()
-            .mapToInt(acc -> {
-                try {
-                    return Integer.parseInt(acc.getAccountNumber());
-                } catch (NumberFormatException e) {
-                    return 0;
-                }
-            })
-            .max()
-            .orElse(999);
-        accountNumberCounter = maxAccountNumber + 1;
+        do {
+            int number = 10000 + random.nextInt(90000);
+            generated = String.valueOf(number);
+        } while (accounts.containsKey(generated));
+        
+        return generated;
     }
     
     public void displayLoadStatus() {
@@ -60,10 +60,7 @@ public class BankingSystem {
             throw new IllegalArgumentException("Initial balance cannot be negative");
         }
         
-        String accountNumber = String.valueOf(accountNumberCounter++);
-        while (accounts.containsKey(accountNumber)) {
-            accountNumber = String.valueOf(accountNumberCounter++);
-        }
+        String accountNumber = generateAccountNumber();
         
         Account account = new Account(accountNumber, username, holderName, initialBalance, pin);
         accounts.put(accountNumber, account);
@@ -181,7 +178,7 @@ public class BankingSystem {
         account.deposit(amount);
         
         Transaction transaction = new Transaction(accountNumber, Transaction.TransactionType.DEPOSIT, amount);
-        transactions.get(accountNumber).add(transaction);
+        transactions.computeIfAbsent(accountNumber, k -> new ArrayList<>()).add(transaction);
         FileHandler.saveAccounts(accounts);
         FileHandler.saveTransactions(transactions);
         
@@ -193,7 +190,7 @@ public class BankingSystem {
         account.withdraw(amount);
         
         Transaction transaction = new Transaction(accountNumber, Transaction.TransactionType.WITHDRAW, amount);
-        transactions.get(accountNumber).add(transaction);
+        transactions.computeIfAbsent(accountNumber, k -> new ArrayList<>()).add(transaction);
         FileHandler.saveAccounts(accounts);
         FileHandler.saveTransactions(transactions);
         
@@ -236,8 +233,8 @@ public class BankingSystem {
             Transaction transferOut = new Transaction(senderAccount, Transaction.TransactionType.TRANSFER_OUT, amount, receiverAccount);
             Transaction transferIn = new Transaction(receiverAccount, Transaction.TransactionType.TRANSFER_IN, amount, senderAccount);
             
-            transactions.get(senderAccount).add(transferOut);
-            transactions.get(receiverAccount).add(transferIn);
+            transactions.computeIfAbsent(senderAccount, k -> new ArrayList<>()).add(transferOut);
+            transactions.computeIfAbsent(receiverAccount, k -> new ArrayList<>()).add(transferIn);
             
             FileHandler.saveAccounts(accounts);
             FileHandler.saveTransactions(transactions);

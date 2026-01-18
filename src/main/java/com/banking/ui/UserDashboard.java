@@ -138,9 +138,6 @@ public class UserDashboard extends JFrame {
             }
         });
 
-        JButton viewInfoButton = createMenuButton("View Account Information", new Color(0, 102, 204));
-        viewInfoButton.addActionListener(e -> refreshAccountInfo());
-
         JButton viewHistoryButton = createMenuButton("View Transaction History", new Color(0, 102, 204));
         viewHistoryButton.addActionListener(e -> {
             TransactionHistoryPanel historyPanel = new TransactionHistoryPanel(accountNumber);
@@ -192,7 +189,6 @@ public class UserDashboard extends JFrame {
         buttonPanel.add(depositButton);
         buttonPanel.add(withdrawButton);
         buttonPanel.add(transferButton);
-        buttonPanel.add(viewInfoButton);
         buttonPanel.add(viewHistoryButton);
         buttonPanel.add(updateInfoButton);
         buttonPanel.add(changePinButton);

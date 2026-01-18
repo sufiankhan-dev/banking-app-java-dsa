@@ -45,11 +45,15 @@ public class TransactionDialog extends JDialog {
         setSize(400, type == TransactionType.TRANSFER ? 250 : 200);
         setLocationRelativeTo(getParent());
         setResizable(false);
+        setFocusable(true);
+        setFocusableWindowState(true);
 
         JPanel mainPanel = new JPanel(new BorderLayout(15, 15));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        mainPanel.setBackground(new Color(245, 245, 250));
 
         JPanel formPanel = new JPanel(new GridBagLayout());
+        formPanel.setBackground(new Color(255, 255, 255));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.anchor = GridBagConstraints.WEST;
@@ -57,22 +61,41 @@ public class TransactionDialog extends JDialog {
         if (type == TransactionType.TRANSFER) {
             gbc.gridx = 0;
             gbc.gridy = 0;
-            formPanel.add(new JLabel("Receiver Account Number:"), gbc);
+            JLabel receiverLabel = new JLabel("Receiver Account Number:");
+            receiverLabel.setFont(new Font("Arial", Font.BOLD, 12));
+            receiverLabel.setForeground(new Color(50, 50, 50));
+            formPanel.add(receiverLabel, gbc);
             gbc.gridx = 1;
             receiverAccountField = new JTextField(15);
+            receiverAccountField.setFont(new Font("Arial", Font.PLAIN, 12));
+            receiverAccountField.setForeground(Color.BLACK);
+            receiverAccountField.setBackground(Color.WHITE);
+            receiverAccountField.setEnabled(true);
+            receiverAccountField.setEditable(true);
             formPanel.add(receiverAccountField, gbc);
 
             gbc.gridx = 0;
             gbc.gridy = 1;
-            formPanel.add(new JLabel("Amount:"), gbc);
+            JLabel amountLabel1 = new JLabel("Amount:");
+            amountLabel1.setFont(new Font("Arial", Font.BOLD, 12));
+            amountLabel1.setForeground(new Color(50, 50, 50));
+            formPanel.add(amountLabel1, gbc);
         } else {
             gbc.gridx = 0;
             gbc.gridy = 0;
-            formPanel.add(new JLabel("Amount:"), gbc);
+            JLabel amountLabel2 = new JLabel("Amount:");
+            amountLabel2.setFont(new Font("Arial", Font.BOLD, 12));
+            amountLabel2.setForeground(new Color(50, 50, 50));
+            formPanel.add(amountLabel2, gbc);
         }
 
         gbc.gridx = 1;
         amountField = new JTextField(15);
+        amountField.setFont(new Font("Arial", Font.PLAIN, 12));
+        amountField.setForeground(Color.BLACK);
+        amountField.setBackground(Color.WHITE);
+        amountField.setEnabled(true);
+        amountField.setEditable(true);
         formPanel.add(amountField, gbc);
 
         errorLabel = new JLabel(" ");
@@ -85,15 +108,29 @@ public class TransactionDialog extends JDialog {
         formPanel.add(errorLabel, gbc);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        buttonPanel.setBackground(new Color(245, 245, 250));
         JButton submitButton = new JButton(getSubmitButtonText());
-        submitButton.setPreferredSize(new Dimension(120, 35));
-        submitButton.setBackground(new Color(0, 153, 76));
+        submitButton.setPreferredSize(new Dimension(130, 40));
+        submitButton.setBackground(new Color(0, 120, 60));
         submitButton.setForeground(Color.WHITE);
+        submitButton.setFont(new Font("Arial", Font.BOLD, 13));
         submitButton.setFocusPainted(false);
+        submitButton.setOpaque(true);
+        submitButton.setContentAreaFilled(true);
+        submitButton.setBorderPainted(true);
+        submitButton.setBorder(BorderFactory.createRaisedBevelBorder());
         submitButton.addActionListener(new SubmitActionListener());
 
         JButton cancelButton = new JButton("Cancel");
-        cancelButton.setPreferredSize(new Dimension(120, 35));
+        cancelButton.setPreferredSize(new Dimension(130, 40));
+        cancelButton.setBackground(new Color(150, 150, 150));
+        cancelButton.setForeground(Color.WHITE);
+        cancelButton.setFont(new Font("Arial", Font.BOLD, 13));
+        cancelButton.setFocusPainted(false);
+        cancelButton.setOpaque(true);
+        cancelButton.setContentAreaFilled(true);
+        cancelButton.setBorderPainted(true);
+        cancelButton.setBorder(BorderFactory.createRaisedBevelBorder());
         cancelButton.addActionListener(e -> dispose());
 
         buttonPanel.add(submitButton);
@@ -103,6 +140,14 @@ public class TransactionDialog extends JDialog {
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         add(mainPanel);
+        
+        SwingUtilities.invokeLater(() -> {
+            if (type == TransactionType.TRANSFER && receiverAccountField != null) {
+                receiverAccountField.requestFocus();
+            } else if (amountField != null) {
+                amountField.requestFocus();
+            }
+        });
     }
 
     private String getSubmitButtonText() {

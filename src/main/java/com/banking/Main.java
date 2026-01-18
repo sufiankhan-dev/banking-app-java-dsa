@@ -13,7 +13,7 @@ public class Main {
             @Override
             public void run() {
                 try {
-                    javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
+                    javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getCrossPlatformLookAndFeelClassName());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

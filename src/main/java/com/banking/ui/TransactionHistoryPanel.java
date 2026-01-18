@@ -28,6 +28,7 @@ public class TransactionHistoryPanel extends JPanel {
     private void initializeUI() {
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        setBackground(new Color(245, 245, 250));
 
         String[] columnNames = {"Transaction ID", "Type", "Amount", "Date", "Related Account"};
         tableModel = new DefaultTableModel(columnNames, 0) {
@@ -42,6 +43,13 @@ public class TransactionHistoryPanel extends JPanel {
         transactionTable.setRowHeight(25);
         transactionTable.getTableHeader().setReorderingAllowed(false);
         transactionTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        transactionTable.setBackground(Color.WHITE);
+        transactionTable.setForeground(new Color(30, 30, 30));
+        transactionTable.getTableHeader().setBackground(new Color(0, 102, 204));
+        transactionTable.getTableHeader().setForeground(Color.WHITE);
+        transactionTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
+        transactionTable.setFont(new Font("Arial", Font.PLAIN, 11));
+        transactionTable.setGridColor(new Color(200, 200, 200));
         
         transactionTable.getColumnModel().getColumn(0).setPreferredWidth(100);
         transactionTable.getColumnModel().getColumn(1).setPreferredWidth(120);
@@ -51,19 +59,43 @@ public class TransactionHistoryPanel extends JPanel {
 
         JScrollPane scrollPane = new JScrollPane(transactionTable);
         scrollPane.setPreferredSize(new Dimension(750, 350));
+        scrollPane.setBackground(Color.WHITE);
 
         JPanel filterPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
-        filterPanel.add(new JLabel("Show Last N Transactions:"));
+        filterPanel.setBackground(new Color(255, 255, 255));
+        JLabel filterLabel = new JLabel("Show Last N Transactions:");
+        filterLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        filterLabel.setForeground(new Color(50, 50, 50));
+        filterPanel.add(filterLabel);
         filterField = new JTextField(10);
         filterPanel.add(filterField);
         filterButton = new JButton("Filter");
+        filterButton.setBackground(new Color(0, 102, 204));
+        filterButton.setForeground(Color.WHITE);
+        filterButton.setFont(new Font("Arial", Font.BOLD, 11));
+        filterButton.setFocusPainted(false);
+        filterButton.setOpaque(true);
+        filterButton.setContentAreaFilled(true);
+        filterButton.setBorderPainted(true);
+        filterButton.setBorder(BorderFactory.createRaisedBevelBorder());
         filterButton.addActionListener(e -> filterTransactions());
         filterPanel.add(filterButton);
         showAllButton = new JButton("Show All");
+        showAllButton.setBackground(new Color(102, 102, 102));
+        showAllButton.setForeground(Color.WHITE);
+        showAllButton.setFont(new Font("Arial", Font.BOLD, 11));
+        showAllButton.setFocusPainted(false);
+        showAllButton.setOpaque(true);
+        showAllButton.setContentAreaFilled(true);
+        showAllButton.setBorderPainted(true);
+        showAllButton.setBorder(BorderFactory.createRaisedBevelBorder());
         showAllButton.addActionListener(e -> loadAllTransactions());
         filterPanel.add(showAllButton);
 
-        add(new JLabel("Transaction History for Account: " + accountNumber), BorderLayout.NORTH);
+        JLabel titleLabel = new JLabel("Transaction History for Account: " + accountNumber);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        titleLabel.setForeground(new Color(0, 70, 150));
+        add(titleLabel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
         add(filterPanel, BorderLayout.SOUTH);
     }

@@ -22,46 +22,68 @@ public class AccountInfoPanel extends JPanel {
 
     private void initializeUI() {
         setLayout(new GridBagLayout());
-        setBackground(Color.WHITE);
+        setBackground(new Color(255, 255, 255));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(15, 15, 15, 15);
         gbc.anchor = GridBagConstraints.WEST;
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        add(new JLabel("Account Number:"), gbc);
+        JLabel accountLabel = new JLabel("Account Number:");
+        accountLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        accountLabel.setForeground(new Color(50, 50, 50));
+        add(accountLabel, gbc);
         gbc.gridx = 1;
         accountNumberLabel = new JLabel();
         accountNumberLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        accountNumberLabel.setForeground(new Color(0, 70, 150));
         add(accountNumberLabel, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        add(new JLabel("Holder Name:"), gbc);
+        JLabel holderLabel = new JLabel("Holder Name:");
+        holderLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        holderLabel.setForeground(new Color(50, 50, 50));
+        add(holderLabel, gbc);
         gbc.gridx = 1;
         holderNameLabel = new JLabel();
         holderNameLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        holderNameLabel.setForeground(new Color(30, 30, 30));
         add(holderNameLabel, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
-        add(new JLabel("Balance:"), gbc);
+        JLabel balanceTextLabel = new JLabel("Balance:");
+        balanceTextLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        balanceTextLabel.setForeground(new Color(50, 50, 50));
+        add(balanceTextLabel, gbc);
         gbc.gridx = 1;
         balanceLabel = new JLabel();
-        balanceLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        balanceLabel.setForeground(new Color(0, 153, 76));
+        balanceLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        balanceLabel.setForeground(new Color(0, 120, 60));
         add(balanceLabel, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 3;
-        add(new JLabel("Status:"), gbc);
+        JLabel statusTextLabel = new JLabel("Status:");
+        statusTextLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        statusTextLabel.setForeground(new Color(50, 50, 50));
+        add(statusTextLabel, gbc);
         gbc.gridx = 1;
         statusLabel = new JLabel();
         statusLabel.setFont(new Font("Arial", Font.BOLD, 14));
         add(statusLabel, gbc);
 
         JButton refreshButton = new JButton("Refresh");
-        refreshButton.setPreferredSize(new Dimension(100, 30));
+        refreshButton.setPreferredSize(new Dimension(100, 35));
+        refreshButton.setBackground(new Color(0, 102, 204));
+        refreshButton.setForeground(Color.WHITE);
+        refreshButton.setFont(new Font("Arial", Font.BOLD, 12));
+        refreshButton.setFocusPainted(false);
+        refreshButton.setOpaque(true);
+        refreshButton.setContentAreaFilled(true);
+        refreshButton.setBorderPainted(true);
+        refreshButton.setBorder(BorderFactory.createRaisedBevelBorder());
         refreshButton.addActionListener(e -> refresh());
         gbc.gridx = 0;
         gbc.gridy = 4;

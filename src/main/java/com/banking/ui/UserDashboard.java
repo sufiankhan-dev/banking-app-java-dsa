@@ -29,19 +29,26 @@ public class UserDashboard extends JFrame {
 
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        mainPanel.setBackground(new Color(245, 245, 250));
 
         JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(new Color(245, 245, 250));
         String holderName = bankingSystem.getAccountHolderName(accountNumber);
         JLabel welcomeLabel = new JLabel("Welcome, " + holderName);
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        welcomeLabel.setForeground(new Color(0, 102, 204));
+        welcomeLabel.setForeground(new Color(0, 70, 150));
         headerPanel.add(welcomeLabel, BorderLayout.WEST);
 
         JButton logoutButton = new JButton("Logout");
-        logoutButton.setPreferredSize(new Dimension(100, 30));
-        logoutButton.setBackground(new Color(204, 0, 0));
+        logoutButton.setPreferredSize(new Dimension(100, 35));
+        logoutButton.setBackground(new Color(180, 0, 0));
         logoutButton.setForeground(Color.WHITE);
+        logoutButton.setFont(new Font("Arial", Font.BOLD, 12));
         logoutButton.setFocusPainted(false);
+        logoutButton.setOpaque(true);
+        logoutButton.setContentAreaFilled(true);
+        logoutButton.setBorderPainted(true);
+        logoutButton.setBorder(BorderFactory.createRaisedBevelBorder());
         logoutButton.addActionListener(e -> {
             bankingSystem.logout();
             MainWindow mainWindow = new MainWindow();
@@ -51,27 +58,84 @@ public class UserDashboard extends JFrame {
         headerPanel.add(logoutButton, BorderLayout.EAST);
 
         JPanel buttonPanel = new JPanel(new GridLayout(4, 2, 10, 10));
-        buttonPanel.setBorder(BorderFactory.createTitledBorder("Banking Operations"));
+        buttonPanel.setBackground(new Color(255, 255, 255));
+        buttonPanel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createEtchedBorder(), "Banking Operations",
+            javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+            javax.swing.border.TitledBorder.DEFAULT_POSITION,
+            new Font("Arial", Font.BOLD, 13),
+            new Color(0, 70, 150)));
 
         JButton depositButton = createMenuButton("Deposit Money", new Color(0, 153, 76));
         depositButton.addActionListener(e -> {
-            TransactionDialog dialog = new TransactionDialog(this, TransactionDialog.TransactionType.DEPOSIT);
-            dialog.setVisible(true);
-            refreshAccountInfo();
+            String amountText = JOptionPane.showInputDialog(this, "Enter Amount to Deposit:", "Deposit Money", JOptionPane.QUESTION_MESSAGE);
+            if (amountText == null || amountText.trim().isEmpty()) return;
+            
+            try {
+                double amount = Double.parseDouble(amountText.trim());
+                if (amount <= 0) {
+                    JOptionPane.showMessageDialog(this, "Amount must be greater than zero.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                bankingSystem.deposit(accountNumber, amount);
+                JOptionPane.showMessageDialog(this, 
+                    "Deposit successful!\nNew Balance: $" + String.format("%.2f", bankingSystem.getBalance(accountNumber)), 
+                    "Success", JOptionPane.INFORMATION_MESSAGE);
+                refreshAccountInfo();
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Invalid amount format.", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         JButton withdrawButton = createMenuButton("Withdraw Money", new Color(204, 102, 0));
         withdrawButton.addActionListener(e -> {
-            TransactionDialog dialog = new TransactionDialog(this, TransactionDialog.TransactionType.WITHDRAW);
-            dialog.setVisible(true);
-            refreshAccountInfo();
+            String amountText = JOptionPane.showInputDialog(this, "Enter Amount to Withdraw:", "Withdraw Money", JOptionPane.QUESTION_MESSAGE);
+            if (amountText == null || amountText.trim().isEmpty()) return;
+            
+            try {
+                double amount = Double.parseDouble(amountText.trim());
+                if (amount <= 0) {
+                    JOptionPane.showMessageDialog(this, "Amount must be greater than zero.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                bankingSystem.withdraw(accountNumber, amount);
+                JOptionPane.showMessageDialog(this, 
+                    "Withdrawal successful!\nRemaining Balance: $" + String.format("%.2f", bankingSystem.getBalance(accountNumber)), 
+                    "Success", JOptionPane.INFORMATION_MESSAGE);
+                refreshAccountInfo();
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Invalid amount format.", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         JButton transferButton = createMenuButton("Transfer Funds", new Color(153, 0, 153));
         transferButton.addActionListener(e -> {
-            TransactionDialog dialog = new TransactionDialog(this, TransactionDialog.TransactionType.TRANSFER);
-            dialog.setVisible(true);
-            refreshAccountInfo();
+            String receiverAccount = JOptionPane.showInputDialog(this, "Enter Receiver Account Number:", "Transfer Funds", JOptionPane.QUESTION_MESSAGE);
+            if (receiverAccount == null || receiverAccount.trim().isEmpty()) return;
+            
+            String amountText = JOptionPane.showInputDialog(this, "Enter Amount to Transfer:", "Transfer Funds", JOptionPane.QUESTION_MESSAGE);
+            if (amountText == null || amountText.trim().isEmpty()) return;
+            
+            try {
+                double amount = Double.parseDouble(amountText.trim());
+                if (amount <= 0) {
+                    JOptionPane.showMessageDialog(this, "Amount must be greater than zero.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                bankingSystem.transferFunds(accountNumber, receiverAccount.trim(), amount);
+                JOptionPane.showMessageDialog(this, 
+                    "Transfer successful!\nYour Remaining Balance: $" + String.format("%.2f", bankingSystem.getBalance(accountNumber)), 
+                    "Success", JOptionPane.INFORMATION_MESSAGE);
+                refreshAccountInfo();
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Invalid amount format.", "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         });
 
         JButton viewInfoButton = createMenuButton("View Account Information", new Color(0, 102, 204));
@@ -138,7 +202,11 @@ public class UserDashboard extends JFrame {
 
         statusLabel = new JLabel("Ready");
         statusLabel.setBorder(BorderFactory.createLoweredBevelBorder());
-        statusLabel.setPreferredSize(new Dimension(0, 25));
+        statusLabel.setPreferredSize(new Dimension(0, 30));
+        statusLabel.setBackground(new Color(240, 240, 240));
+        statusLabel.setOpaque(true);
+        statusLabel.setForeground(new Color(50, 50, 50));
+        statusLabel.setFont(new Font("Arial", Font.PLAIN, 11));
 
         mainPanel.add(headerPanel, BorderLayout.NORTH);
         mainPanel.add(buttonPanel, BorderLayout.WEST);
@@ -153,8 +221,12 @@ public class UserDashboard extends JFrame {
         button.setPreferredSize(new Dimension(200, 50));
         button.setBackground(bgColor);
         button.setForeground(Color.WHITE);
+        button.setFont(new Font("Arial", Font.BOLD, 13));
         button.setFocusPainted(false);
-        button.setFont(new Font("Arial", Font.PLAIN, 14));
+        button.setOpaque(true);
+        button.setContentAreaFilled(true);
+        button.setBorderPainted(true);
+        button.setBorder(BorderFactory.createRaisedBevelBorder());
         return button;
     }
 

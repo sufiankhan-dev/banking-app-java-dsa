@@ -34,18 +34,25 @@ public class AdminDashboard extends JFrame {
 
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        mainPanel.setBackground(new Color(245, 245, 250));
 
         JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(new Color(245, 245, 250));
         JLabel titleLabel = new JLabel("Admin Dashboard");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setForeground(new Color(204, 102, 0));
+        titleLabel.setForeground(new Color(180, 80, 0));
         headerPanel.add(titleLabel, BorderLayout.WEST);
 
         JButton exitButton = new JButton("Exit Admin Mode");
-        exitButton.setPreferredSize(new Dimension(150, 30));
-        exitButton.setBackground(new Color(204, 0, 0));
+        exitButton.setPreferredSize(new Dimension(150, 35));
+        exitButton.setBackground(new Color(180, 0, 0));
         exitButton.setForeground(Color.WHITE);
+        exitButton.setFont(new Font("Arial", Font.BOLD, 12));
         exitButton.setFocusPainted(false);
+        exitButton.setOpaque(true);
+        exitButton.setContentAreaFilled(true);
+        exitButton.setBorderPainted(true);
+        exitButton.setBorder(BorderFactory.createRaisedBevelBorder());
         exitButton.addActionListener(e -> {
             MainWindow mainWindow = new MainWindow();
             mainWindow.setVisible(true);
@@ -54,7 +61,13 @@ public class AdminDashboard extends JFrame {
         headerPanel.add(exitButton, BorderLayout.EAST);
 
         JPanel buttonPanel = new JPanel(new GridLayout(4, 2, 10, 10));
-        buttonPanel.setBorder(BorderFactory.createTitledBorder("Admin Operations"));
+        buttonPanel.setBackground(new Color(255, 255, 255));
+        buttonPanel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createEtchedBorder(), "Admin Operations",
+            javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+            javax.swing.border.TitledBorder.DEFAULT_POSITION,
+            new Font("Arial", Font.BOLD, 13),
+            new Color(180, 80, 0)));
         buttonPanel.setPreferredSize(new Dimension(250, 0));
 
         JButton viewAllButton = createAdminButton("View All Accounts", new Color(0, 102, 204));
@@ -87,12 +100,30 @@ public class AdminDashboard extends JFrame {
         buttonPanel.add(statisticsButton);
 
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        searchPanel.setBorder(BorderFactory.createTitledBorder("Search"));
+        searchPanel.setBackground(new Color(255, 255, 255));
+        searchPanel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createEtchedBorder(), "Search",
+            javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+            javax.swing.border.TitledBorder.DEFAULT_POSITION,
+            new Font("Arial", Font.BOLD, 12),
+            new Color(0, 70, 150)));
         searchField = new JTextField(15);
         searchTypeCombo = new JComboBox<>(new String[]{"By Number", "By Name"});
         JButton searchNowButton = new JButton("Search");
+        searchNowButton.setBackground(new Color(0, 102, 204));
+        searchNowButton.setForeground(Color.WHITE);
+        searchNowButton.setFont(new Font("Arial", Font.BOLD, 11));
+        searchNowButton.setFocusPainted(false);
+        searchNowButton.setOpaque(true);
+        searchNowButton.setContentAreaFilled(true);
+        searchNowButton.setBorderPainted(true);
+        searchNowButton.setBorder(BorderFactory.createRaisedBevelBorder());
         searchNowButton.addActionListener(e -> searchAccounts());
-        searchPanel.add(new JLabel("Search:"));
+        JLabel searchLabel = new JLabel("Search:");
+        searchLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        searchLabel.setForeground(new Color(50, 50, 50));
+        searchPanel.add(searchLabel);
+        searchField.setFont(new Font("Arial", Font.PLAIN, 12));
         searchPanel.add(searchField);
         searchPanel.add(searchTypeCombo);
         searchPanel.add(searchNowButton);
@@ -108,12 +139,27 @@ public class AdminDashboard extends JFrame {
         accountTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         accountTable.setRowHeight(25);
         accountTable.getTableHeader().setReorderingAllowed(false);
+        accountTable.setBackground(Color.WHITE);
+        accountTable.setForeground(new Color(30, 30, 30));
+        accountTable.getTableHeader().setBackground(new Color(0, 102, 204));
+        accountTable.getTableHeader().setForeground(Color.WHITE);
+        accountTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
+        accountTable.setFont(new Font("Arial", Font.PLAIN, 11));
+        accountTable.setGridColor(new Color(200, 200, 200));
         JScrollPane tableScrollPane = new JScrollPane(accountTable);
+        tableScrollPane.setBackground(Color.WHITE);
 
         statisticsArea = new JTextArea(8, 30);
         statisticsArea.setEditable(false);
         statisticsArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
-        statisticsArea.setBorder(BorderFactory.createTitledBorder("Bank Statistics"));
+        statisticsArea.setBackground(new Color(255, 255, 255));
+        statisticsArea.setForeground(new Color(30, 30, 30));
+        statisticsArea.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createEtchedBorder(), "Bank Statistics",
+            javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+            javax.swing.border.TitledBorder.DEFAULT_POSITION,
+            new Font("Arial", Font.BOLD, 12),
+            new Color(0, 70, 150)));
         JScrollPane statisticsScrollPane = new JScrollPane(statisticsArea);
 
         JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
@@ -133,8 +179,12 @@ public class AdminDashboard extends JFrame {
         button.setPreferredSize(new Dimension(200, 40));
         button.setBackground(bgColor);
         button.setForeground(Color.WHITE);
+        button.setFont(new Font("Arial", Font.BOLD, 12));
         button.setFocusPainted(false);
-        button.setFont(new Font("Arial", Font.PLAIN, 12));
+        button.setOpaque(true);
+        button.setContentAreaFilled(true);
+        button.setBorderPainted(true);
+        button.setBorder(BorderFactory.createRaisedBevelBorder());
         return button;
     }
 

@@ -28,33 +28,45 @@ public class MainWindow extends JFrame {
 
         JPanel mainPanel = new JPanel(new BorderLayout(20, 20));
         mainPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
-        mainPanel.setBackground(Color.WHITE);
+        mainPanel.setBackground(new Color(245, 245, 250));
 
         JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(Color.WHITE);
+        headerPanel.setBackground(new Color(245, 245, 250));
         JLabel titleLabel = new JLabel("Welcome to Banking System");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setForeground(new Color(0, 102, 204));
+        titleLabel.setForeground(new Color(0, 70, 150));
         headerPanel.add(titleLabel);
 
         JPanel loginPanel = new JPanel(new GridBagLayout());
-        loginPanel.setBackground(Color.WHITE);
-        loginPanel.setBorder(BorderFactory.createTitledBorder("Login"));
+        loginPanel.setBackground(new Color(255, 255, 255));
+        loginPanel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createEtchedBorder(), "Login", 
+            javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+            javax.swing.border.TitledBorder.DEFAULT_POSITION,
+            new Font("Arial", Font.BOLD, 14),
+            new Color(0, 70, 150)));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.anchor = GridBagConstraints.WEST;
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        loginPanel.add(new JLabel("Account Number:"), gbc);
+        JLabel accountLabel = new JLabel("Account Number:");
+        accountLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        accountLabel.setForeground(new Color(50, 50, 50));
+        loginPanel.add(accountLabel, gbc);
 
         gbc.gridx = 1;
         accountNumberField = new JTextField(20);
+        accountNumberField.setFont(new Font("Arial", Font.PLAIN, 12));
         loginPanel.add(accountNumberField, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        loginPanel.add(new JLabel("PIN:"), gbc);
+        JLabel pinLabel = new JLabel("PIN:");
+        pinLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        pinLabel.setForeground(new Color(50, 50, 50));
+        loginPanel.add(pinLabel, gbc);
 
         gbc.gridx = 1;
         pinField = new JPasswordField(20);
@@ -65,31 +77,46 @@ public class MainWindow extends JFrame {
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         JButton loginButton = new JButton("Login");
-        loginButton.setPreferredSize(new Dimension(150, 35));
+        loginButton.setPreferredSize(new Dimension(150, 40));
         loginButton.setBackground(new Color(0, 102, 204));
         loginButton.setForeground(Color.WHITE);
+        loginButton.setFont(new Font("Arial", Font.BOLD, 14));
         loginButton.setFocusPainted(false);
+        loginButton.setOpaque(true);
+        loginButton.setContentAreaFilled(true);
+        loginButton.setBorderPainted(true);
+        loginButton.setBorder(BorderFactory.createRaisedBevelBorder());
         loginButton.addActionListener(new LoginActionListener());
         loginPanel.add(loginButton, gbc);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        buttonPanel.setBackground(Color.WHITE);
+        buttonPanel.setBackground(new Color(245, 245, 250));
 
         JButton createAccountButton = new JButton("Create New Account");
-        createAccountButton.setPreferredSize(new Dimension(180, 35));
-        createAccountButton.setBackground(new Color(0, 153, 76));
+        createAccountButton.setPreferredSize(new Dimension(180, 40));
+        createAccountButton.setBackground(new Color(0, 120, 60));
         createAccountButton.setForeground(Color.WHITE);
+        createAccountButton.setFont(new Font("Arial", Font.BOLD, 13));
         createAccountButton.setFocusPainted(false);
+        createAccountButton.setOpaque(true);
+        createAccountButton.setContentAreaFilled(true);
+        createAccountButton.setBorderPainted(true);
+        createAccountButton.setBorder(BorderFactory.createRaisedBevelBorder());
         createAccountButton.addActionListener(e -> {
             CreateAccountDialog dialog = new CreateAccountDialog(this);
             dialog.setVisible(true);
         });
 
         JButton adminLoginButton = new JButton("Admin Login");
-        adminLoginButton.setPreferredSize(new Dimension(180, 35));
-        adminLoginButton.setBackground(new Color(204, 102, 0));
+        adminLoginButton.setPreferredSize(new Dimension(180, 40));
+        adminLoginButton.setBackground(new Color(180, 80, 0));
         adminLoginButton.setForeground(Color.WHITE);
+        adminLoginButton.setFont(new Font("Arial", Font.BOLD, 13));
         adminLoginButton.setFocusPainted(false);
+        adminLoginButton.setOpaque(true);
+        adminLoginButton.setContentAreaFilled(true);
+        adminLoginButton.setBorderPainted(true);
+        adminLoginButton.setBorder(BorderFactory.createRaisedBevelBorder());
         adminLoginButton.addActionListener(new AdminLoginActionListener());
 
         buttonPanel.add(createAccountButton);
@@ -105,7 +132,7 @@ public class MainWindow extends JFrame {
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         JPanel errorPanel = new JPanel(new BorderLayout());
-        errorPanel.setBackground(Color.WHITE);
+        errorPanel.setBackground(new Color(245, 245, 250));
         errorPanel.add(errorLabel, BorderLayout.CENTER);
         mainPanel.add(errorPanel, BorderLayout.AFTER_LAST_LINE);
 

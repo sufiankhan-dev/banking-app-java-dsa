@@ -31,7 +31,7 @@ public class CreateAccountDialog extends JDialog {
     }
 
     private void initializeUI() {
-        setSize(600, 600);
+        setSize(600, 450);
         setLocationRelativeTo(getParent());
         setResizable(false);
 
@@ -42,7 +42,7 @@ public class CreateAccountDialog extends JDialog {
         formPanel = new JPanel(new GridBagLayout());
         formPanel.setBackground(new Color(255, 255, 255));
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.insets = new Insets(5, 8, 5, 8);
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.NONE;
 
@@ -74,6 +74,7 @@ public class CreateAccountDialog extends JDialog {
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 2;
+        gbc.insets = new Insets(0, 8, 5, 8);
         accountNumberError = new JLabel(" ");
         accountNumberError.setForeground(Color.RED);
         accountNumberError.setFont(new Font("Arial", Font.PLAIN, 11));
@@ -82,6 +83,7 @@ public class CreateAccountDialog extends JDialog {
         accountNumberError.setMaximumSize(new Dimension(200, 0));
         formPanel.add(accountNumberError, gbc);
         gbc.gridwidth = 1;
+        gbc.insets = new Insets(5, 8, 5, 8);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -111,6 +113,7 @@ public class CreateAccountDialog extends JDialog {
         gbc.gridx = 0;
         gbc.gridy = 3;
         gbc.gridwidth = 2;
+        gbc.insets = new Insets(0, 8, 5, 8);
         holderNameError = new JLabel(" ");
         holderNameError.setForeground(Color.RED);
         holderNameError.setFont(new Font("Arial", Font.PLAIN, 11));
@@ -119,6 +122,7 @@ public class CreateAccountDialog extends JDialog {
         holderNameError.setMaximumSize(new Dimension(200, 0));
         formPanel.add(holderNameError, gbc);
         gbc.gridwidth = 1;
+        gbc.insets = new Insets(5, 8, 5, 8);
 
         gbc.gridx = 0;
         gbc.gridy = 4;
@@ -148,6 +152,7 @@ public class CreateAccountDialog extends JDialog {
         gbc.gridx = 0;
         gbc.gridy = 5;
         gbc.gridwidth = 2;
+        gbc.insets = new Insets(0, 8, 5, 8);
         balanceError = new JLabel(" ");
         balanceError.setForeground(Color.RED);
         balanceError.setFont(new Font("Arial", Font.PLAIN, 11));
@@ -156,6 +161,7 @@ public class CreateAccountDialog extends JDialog {
         balanceError.setMaximumSize(new Dimension(200, 0));
         formPanel.add(balanceError, gbc);
         gbc.gridwidth = 1;
+        gbc.insets = new Insets(5, 8, 5, 8);
 
         gbc.gridx = 0;
         gbc.gridy = 6;
@@ -210,15 +216,16 @@ public class CreateAccountDialog extends JDialog {
         gbc.gridx = 0;
         gbc.gridy = 9;
         gbc.gridwidth = 2;
+        gbc.insets = new Insets(0, 8, 5, 8);
         pinError = new JLabel(" ");
         pinError.setForeground(Color.RED);
         pinError.setFont(new Font("Arial", Font.PLAIN, 11));
         pinError.setPreferredSize(new Dimension(200, 0));
         pinError.setMinimumSize(new Dimension(200, 0));
         pinError.setMaximumSize(new Dimension(200, 0));
-        // PIN error label is shared for both PIN and Confirm PIN fields
         formPanel.add(pinError, gbc);
         gbc.gridwidth = 1;
+        gbc.insets = new Insets(5, 8, 5, 8);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         buttonPanel.setBackground(new Color(245, 245, 250));

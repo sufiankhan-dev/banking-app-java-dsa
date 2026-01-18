@@ -7,14 +7,35 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class BankingSystem {
-    private Map<String, Account> accounts;
+    private Map<String, Account> accounts; 
+    private Map<String, String> usernameToAccountNumber; 
     private Map<String, List<Transaction>> transactions;
     private String currentLoggedInAccount;
+    private static int accountNumberCounter = 1000;
 
     public BankingSystem() {
         this.accounts = FileHandler.loadAccounts();
         this.transactions = FileHandler.loadTransactions();
         this.currentLoggedInAccount = null;
+        this.usernameToAccountNumber = new HashMap<>();
+        
+        for (Account account : accounts.values()) {
+            if (account.getUsername() != null) {
+                usernameToAccountNumber.put(account.getUsername().toLowerCase(), account.getAccountNumber());
+            }
+        }
+        
+        int maxAccountNumber = accounts.values().stream()
+            .mapToInt(acc -> {
+                try {
+                    return Integer.parseInt(acc.getAccountNumber());
+                } catch (NumberFormatException e) {
+                    return 0;
+                }
+            })
+            .max()
+            .orElse(999);
+        accountNumberCounter = maxAccountNumber + 1;
     }
     
     public void displayLoadStatus() {
@@ -26,19 +47,41 @@ public class BankingSystem {
         }
     }
 
-    public boolean createAccount(String accountNumber, String holderName, double initialBalance, String pin) {
-        if (accounts.containsKey(accountNumber)) {
-            throw new IllegalArgumentException("Account number already exists: " + accountNumber);
+    public String createAccount(String username, String holderName, double initialBalance, String pin) {
+        if (username == null || username.trim().isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
+        username = username.trim().toLowerCase();
+        
+        if (usernameToAccountNumber.containsKey(username)) {
+            throw new IllegalArgumentException("Username already exists: " + username);
         }
         if (initialBalance < 0) {
             throw new IllegalArgumentException("Initial balance cannot be negative");
         }
         
-        Account account = new Account(accountNumber, holderName, initialBalance, pin);
+        String accountNumber = String.valueOf(accountNumberCounter++);
+        while (accounts.containsKey(accountNumber)) {
+            accountNumber = String.valueOf(accountNumberCounter++);
+        }
+        
+        Account account = new Account(accountNumber, username, holderName, initialBalance, pin);
         accounts.put(accountNumber, account);
+        usernameToAccountNumber.put(username, accountNumber);
         transactions.put(accountNumber, new ArrayList<>());
         FileHandler.saveAccounts(accounts);
-        return true;
+        return accountNumber;
+    }
+    
+    public boolean accountExists(String accountNumber) {
+        return accounts.containsKey(accountNumber);
+    }
+    
+    public boolean usernameExists(String username) {
+        if (username == null || username.trim().isEmpty()) {
+            return false;
+        }
+        return usernameToAccountNumber.containsKey(username.trim().toLowerCase());
     }
 
     public boolean updateAccountInfo(String accountNumber, String newHolderName) {
@@ -53,6 +96,32 @@ public class BankingSystem {
         }
         return true;
     }
+    
+    public boolean updateUsername(String accountNumber, String newUsername) {
+        Account account = getAccount(accountNumber);
+        if (account.getStatus() == AccountStatus.CLOSED) {
+            throw new IllegalStateException("Cannot update a closed account");
+        }
+        
+        if (newUsername == null || newUsername.trim().isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
+        
+        newUsername = newUsername.trim().toLowerCase();
+        String oldUsername = account.getUsername().toLowerCase();
+        
+        // Check if new username already exists (and it's not the current username)
+        if (!oldUsername.equals(newUsername) && usernameToAccountNumber.containsKey(newUsername)) {
+            throw new IllegalArgumentException("Username already exists: " + newUsername);
+        }
+        
+        // Update username mapping
+        usernameToAccountNumber.remove(oldUsername);
+        usernameToAccountNumber.put(newUsername, accountNumber);
+        account.setUsername(newUsername);
+        FileHandler.saveAccounts(accounts);
+        return true;
+    }
 
     public boolean closeAccount(String accountNumber) {
         Account account = getAccount(accountNumber);
@@ -61,9 +130,14 @@ public class BankingSystem {
         return true;
     }
 
-    public boolean login(String accountNumber, String pin) {
-        if (!accounts.containsKey(accountNumber)) {
-            throw new IllegalArgumentException("Account not found: " + accountNumber);
+    public boolean login(String username, String pin) {
+        if (username == null || username.trim().isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
+        
+        String accountNumber = usernameToAccountNumber.get(username.trim().toLowerCase());
+        if (accountNumber == null) {
+            throw new IllegalArgumentException("Account not found for username: " + username);
         }
         
         Account account = accounts.get(accountNumber);
@@ -333,7 +407,7 @@ public class BankingSystem {
         return true;
     }
 
-    private Account getAccount(String accountNumber) {
+    public Account getAccount(String accountNumber) {
         if (accountNumber == null || accountNumber.trim().isEmpty()) {
             throw new IllegalArgumentException("Account number cannot be null or empty");
         }
@@ -343,10 +417,6 @@ public class BankingSystem {
             throw new IllegalArgumentException("Account not found: " + accountNumber);
         }
         return account;
-    }
-
-    public boolean accountExists(String accountNumber) {
-        return accounts.containsKey(accountNumber);
     }
 
     public int getAccountCount() {

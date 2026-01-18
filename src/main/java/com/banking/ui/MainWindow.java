@@ -9,7 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class MainWindow extends JFrame {
-    private JTextField accountNumberField;
+    private JTextField usernameField;
     private JPasswordField pinField;
     private JLabel errorLabel;
     private BankingSystem bankingSystem;
@@ -51,23 +51,23 @@ public class MainWindow extends JFrame {
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        JLabel accountLabel = new JLabel("Account Number:");
-        accountLabel.setFont(new Font("Arial", Font.BOLD, 12));
-        accountLabel.setForeground(new Color(50, 50, 50));
-        loginPanel.add(accountLabel, gbc);
+        JLabel usernameLabel = new JLabel("Username:");
+        usernameLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        usernameLabel.setForeground(new Color(50, 50, 50));
+        loginPanel.add(usernameLabel, gbc);
 
         gbc.gridx = 1;
-        accountNumberField = new JTextField(25);
-        accountNumberField.setPreferredSize(new Dimension(200, 30));
-        accountNumberField.setFont(new Font("Arial", Font.PLAIN, 12));
-        accountNumberField.setForeground(Color.BLACK);
-        accountNumberField.setBackground(Color.WHITE);
-        accountNumberField.setEnabled(true);
-        accountNumberField.setEditable(true);
-        accountNumberField.setBorder(BorderFactory.createCompoundBorder(
+        usernameField = new JTextField(25);
+        usernameField.setPreferredSize(new Dimension(200, 30));
+        usernameField.setFont(new Font("Arial", Font.PLAIN, 12));
+        usernameField.setForeground(Color.BLACK);
+        usernameField.setBackground(Color.WHITE);
+        usernameField.setEnabled(true);
+        usernameField.setEditable(true);
+        usernameField.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
             BorderFactory.createEmptyBorder(5, 8, 5, 8)));
-        loginPanel.add(accountNumberField, gbc);
+        loginPanel.add(usernameField, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -193,16 +193,17 @@ public class MainWindow extends JFrame {
     private class LoginActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            String accountNumber = accountNumberField.getText().trim();
+            String username = usernameField.getText().trim();
             String pin = new String(pinField.getPassword()).trim();
 
-            if (accountNumber.isEmpty() || pin.isEmpty()) {
-                errorLabel.setText("Please enter both account number and PIN");
+            if (username.isEmpty() || pin.isEmpty()) {
+                errorLabel.setText("Please enter both username and PIN");
                 return;
             }
 
             try {
-                bankingSystem.login(accountNumber, pin);
+                bankingSystem.login(username, pin);
+                String accountNumber = bankingSystem.getCurrentLoggedInAccount();
                 String holderName = bankingSystem.getAccountHolderName(accountNumber);
                 errorLabel.setText(" ");
                 

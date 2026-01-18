@@ -11,12 +11,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class CreateAccountDialog extends JDialog {
-    private JTextField accountNumberField;
+    private JTextField usernameField;
     private JTextField holderNameField;
     private JTextField balanceField;
     private JPasswordField pinField;
     private JPasswordField confirmPinField;
-    private JLabel accountNumberError;
+    private JLabel usernameError;
     private JLabel holderNameError;
     private JLabel balanceError;
     private JLabel pinError;
@@ -48,40 +48,40 @@ public class CreateAccountDialog extends JDialog {
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        JLabel accountLabel = new JLabel("Account Number:");
-        accountLabel.setFont(new Font("Arial", Font.BOLD, 12));
-        accountLabel.setForeground(new Color(50, 50, 50));
-        formPanel.add(accountLabel, gbc);
+        JLabel usernameLabel = new JLabel("Username:");
+        usernameLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        usernameLabel.setForeground(new Color(50, 50, 50));
+        formPanel.add(usernameLabel, gbc);
         gbc.gridx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
-        accountNumberField = new JTextField(25);
-        accountNumberField.setMinimumSize(new Dimension(250, 30));
-        accountNumberField.setPreferredSize(new Dimension(250, 30));
-        accountNumberField.setMaximumSize(new Dimension(300, 30));
-        accountNumberField.setFont(new Font("Arial", Font.PLAIN, 12));
-        accountNumberField.setForeground(Color.BLACK);
-        accountNumberField.setBackground(Color.WHITE);
-        accountNumberField.setEnabled(true);
-        accountNumberField.setEditable(true);
-        accountNumberField.setBorder(BorderFactory.createCompoundBorder(
+        usernameField = new JTextField(25);
+        usernameField.setMinimumSize(new Dimension(250, 30));
+        usernameField.setPreferredSize(new Dimension(250, 30));
+        usernameField.setMaximumSize(new Dimension(300, 30));
+        usernameField.setFont(new Font("Arial", Font.PLAIN, 12));
+        usernameField.setForeground(Color.BLACK);
+        usernameField.setBackground(Color.WHITE);
+        usernameField.setEnabled(true);
+        usernameField.setEditable(true);
+        usernameField.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
             BorderFactory.createEmptyBorder(5, 8, 5, 8)));
-        accountNumberField.getDocument().addDocumentListener(new AccountNumberValidator());
-        formPanel.add(accountNumberField, gbc);
+        usernameField.getDocument().addDocumentListener(new UsernameValidator());
+        formPanel.add(usernameField, gbc);
         gbc.fill = GridBagConstraints.NONE;
         gbc.weightx = 0.0;
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 2;
         gbc.insets = new Insets(0, 8, 5, 8);
-        accountNumberError = new JLabel(" ");
-        accountNumberError.setForeground(Color.RED);
-        accountNumberError.setFont(new Font("Arial", Font.PLAIN, 11));
-        accountNumberError.setPreferredSize(new Dimension(200, 0));
-        accountNumberError.setMinimumSize(new Dimension(200, 0));
-        accountNumberError.setMaximumSize(new Dimension(200, 0));
-        formPanel.add(accountNumberError, gbc);
+        usernameError = new JLabel(" ");
+        usernameError.setForeground(Color.RED);
+        usernameError.setFont(new Font("Arial", Font.PLAIN, 11));
+        usernameError.setPreferredSize(new Dimension(200, 0));
+        usernameError.setMinimumSize(new Dimension(200, 0));
+        usernameError.setMaximumSize(new Dimension(200, 0));
+        formPanel.add(usernameError, gbc);
         gbc.gridwidth = 1;
         gbc.insets = new Insets(5, 8, 5, 8);
 
@@ -263,56 +263,56 @@ public class CreateAccountDialog extends JDialog {
         add(mainPanel);
         
         SwingUtilities.invokeLater(() -> {
-            accountNumberField.requestFocus();
+            usernameField.requestFocus();
         });
     }
 
     private void validateForm() {
-        boolean isValid = accountNumberField.getText().trim().length() > 0 &&
+        boolean isValid = usernameField.getText().trim().length() > 0 &&
                 holderNameField.getText().trim().length() > 0 &&
                 balanceField.getText().trim().length() > 0 &&
                 new String(pinField.getPassword()).trim().length() > 0 &&
                 new String(confirmPinField.getPassword()).trim().length() > 0 &&
-                accountNumberError.getText().equals(" ") &&
+                usernameError.getText().equals(" ") &&
                 holderNameError.getText().equals(" ") &&
                 balanceError.getText().equals(" ") &&
                 pinError.getText().equals(" ");
         createButton.setEnabled(isValid);
     }
 
-    private class AccountNumberValidator implements DocumentListener {
+    private class UsernameValidator implements DocumentListener {
         @Override
         public void insertUpdate(DocumentEvent e) {
-            validateAccountNumber();
+            validateUsername();
         }
 
         @Override
         public void removeUpdate(DocumentEvent e) {
-            validateAccountNumber();
+            validateUsername();
         }
 
         @Override
         public void changedUpdate(DocumentEvent e) {
-            validateAccountNumber();
+            validateUsername();
         }
 
-        private void validateAccountNumber() {
-            String accountNumber = accountNumberField.getText().trim();
-            if (accountNumber.isEmpty()) {
-                accountNumberError.setText("Account number cannot be empty");
-                accountNumberError.setPreferredSize(new Dimension(200, 20));
-                accountNumberError.setMinimumSize(new Dimension(200, 20));
-                accountNumberError.setMaximumSize(new Dimension(200, 20));
-            } else if (bankingSystem.accountExists(accountNumber)) {
-                accountNumberError.setText("Account number already exists");
-                accountNumberError.setPreferredSize(new Dimension(200, 20));
-                accountNumberError.setMinimumSize(new Dimension(200, 20));
-                accountNumberError.setMaximumSize(new Dimension(200, 20));
+        private void validateUsername() {
+            String username = usernameField.getText().trim();
+            if (username.isEmpty()) {
+                usernameError.setText("Username cannot be empty");
+                usernameError.setPreferredSize(new Dimension(200, 20));
+                usernameError.setMinimumSize(new Dimension(200, 20));
+                usernameError.setMaximumSize(new Dimension(200, 20));
+            } else if (bankingSystem.usernameExists(username)) {
+                usernameError.setText("Username already exists");
+                usernameError.setPreferredSize(new Dimension(200, 20));
+                usernameError.setMinimumSize(new Dimension(200, 20));
+                usernameError.setMaximumSize(new Dimension(200, 20));
             } else {
-                accountNumberError.setText(" ");
-                accountNumberError.setPreferredSize(new Dimension(200, 0));
-                accountNumberError.setMinimumSize(new Dimension(200, 0));
-                accountNumberError.setMaximumSize(new Dimension(200, 0));
+                usernameError.setText(" ");
+                usernameError.setPreferredSize(new Dimension(200, 0));
+                usernameError.setMinimumSize(new Dimension(200, 0));
+                usernameError.setMaximumSize(new Dimension(200, 0));
             }
             formPanel.revalidate();
             formPanel.repaint();
@@ -450,16 +450,16 @@ public class CreateAccountDialog extends JDialog {
     private class CreateAccountActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            String accountNumber = accountNumberField.getText().trim();
+            String username = usernameField.getText().trim();
             String holderName = holderNameField.getText().trim();
             String balanceText = balanceField.getText().trim();
             String pin = new String(pinField.getPassword()).trim();
 
             try {
                 double initialBalance = Double.parseDouble(balanceText);
-                bankingSystem.createAccount(accountNumber, holderName, initialBalance, pin);
+                String accountNumber = bankingSystem.createAccount(username, holderName, initialBalance, pin);
                 JOptionPane.showMessageDialog(CreateAccountDialog.this,
-                        "Account created successfully!\nAccount Number: " + accountNumber,
+                        "Account created successfully!\nUsername: " + username + "\nAccount Number: " + accountNumber,
                         "Success", JOptionPane.INFORMATION_MESSAGE);
                 dispose();
             } catch (Exception ex) {

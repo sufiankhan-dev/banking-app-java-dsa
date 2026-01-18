@@ -92,8 +92,10 @@ public class FileHandler {
     }
 
     private static String accountToLine(Account account) {
+        String username = account.getUsername() != null ? account.getUsername() : "";
         return String.join(DELIMITER,
             account.getAccountNumber(),
+            username,
             account.getHolderName(),
             String.valueOf(account.getBalance()),
             account.getStatus().toString(),
@@ -102,18 +104,34 @@ public class FileHandler {
     }
 
     private static Account lineToAccount(String line) {
-        String[] parts = line.split("\\|\\|\\|");
-        if (parts.length != 5) {
-            throw new IllegalArgumentException("Invalid account format");
+        String[] parts = line.split("\\|\\|\\|", -1);
+        
+        String accountNumber;
+        String username;
+        String holderName;
+        double balance;
+        AccountStatus status;
+        String hashedPin;
+        
+        if (parts.length == 5) {
+            accountNumber = parts[0];
+            username = accountNumber; 
+            holderName = parts[1];
+            balance = Double.parseDouble(parts[2]);
+            status = AccountStatus.valueOf(parts[3]);
+            hashedPin = parts[4];
+        } else if (parts.length == 6) {
+            accountNumber = parts[0];
+            username = parts[1].isEmpty() ? accountNumber : parts[1];
+            holderName = parts[2];
+            balance = Double.parseDouble(parts[3]);
+            status = AccountStatus.valueOf(parts[4]);
+            hashedPin = parts[5];
+        } else {
+            throw new IllegalArgumentException("Invalid account format: expected 5 or 6 parts, got " + parts.length);
         }
         
-        String accountNumber = parts[0];
-        String holderName = parts[1];
-        double balance = Double.parseDouble(parts[2]);
-        AccountStatus status = AccountStatus.valueOf(parts[3]);
-        String hashedPin = parts[4];
-        
-        Account account = new Account(accountNumber, holderName, 0, "temp");
+        Account account = new Account(accountNumber, username, holderName, 0, "temp");
         account.setBalance(balance);
         account.setStatus(status);
         account.setHashedPin(hashedPin);

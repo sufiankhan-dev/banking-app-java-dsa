@@ -5,14 +5,18 @@ import java.security.NoSuchAlgorithmException;
 
 public class Account {
     private String accountNumber;
+    private String username;
     private String holderName;
     private double balance;
     private AccountStatus status;
     private String hashedPin;
 
-    public Account(String accountNumber, String holderName, double initialBalance, String pin) {
+    public Account(String accountNumber, String username, String holderName, double initialBalance, String pin) {
         if (accountNumber == null || accountNumber.trim().isEmpty()) {
             throw new IllegalArgumentException("Account number cannot be null or empty");
+        }
+        if (username == null || username.trim().isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be null or empty");
         }
         if (holderName == null || holderName.trim().isEmpty()) {
             throw new IllegalArgumentException("Holder name cannot be null or empty");
@@ -25,6 +29,7 @@ public class Account {
         }
         
         this.accountNumber = accountNumber.trim();
+        this.username = username.trim();
         this.holderName = holderName.trim();
         this.balance = initialBalance;
         this.status = AccountStatus.ACTIVE;
@@ -33,6 +38,17 @@ public class Account {
 
     public String getAccountNumber() {
         return accountNumber;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+    
+    public void setUsername(String username) {
+        if (username == null || username.trim().isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
+        this.username = username.trim();
     }
 
     public String getHolderName() {

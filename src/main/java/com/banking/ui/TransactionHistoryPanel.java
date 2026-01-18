@@ -43,7 +43,14 @@ public class TransactionHistoryPanel extends JPanel {
             @Override
             public Component prepareRenderer(javax.swing.table.TableCellRenderer renderer, int row, int column) {
                 Component c = super.prepareRenderer(renderer, row, column);
-                if (!isRowSelected(row)) {
+                String firstCellValue = getValueAt(row, 0) != null ? getValueAt(row, 0).toString() : "";
+                if (firstCellValue.equals("No transactions found")) {
+                    c.setBackground(new Color(250, 250, 250));
+                    c.setForeground(new Color(150, 150, 150));
+                    if (c instanceof JLabel) {
+                        ((JLabel) c).setHorizontalAlignment(SwingConstants.CENTER);
+                    }
+                } else if (!isRowSelected(row)) {
                     c.setBackground(row % 2 == 0 ? Color.WHITE : new Color(248, 248, 252));
                 } else {
                     c.setBackground(new Color(0, 102, 204));
@@ -138,7 +145,7 @@ public class TransactionHistoryPanel extends JPanel {
         List<Transaction> transactions = bankingSystem.getTransactionHistory(accountNumber);
         
         if (transactions.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "No transactions found for this account.", "Information", JOptionPane.INFORMATION_MESSAGE);
+            tableModel.addRow(new Object[]{"No transactions found", "", "", "", ""});
             return;
         }
 
@@ -173,8 +180,10 @@ public class TransactionHistoryPanel extends JPanel {
             List<Transaction> allTransactions = bankingSystem.getTransactionHistory(accountNumber);
             int totalTransactions = allTransactions.size();
 
+            tableModel.setRowCount(0);
+            
             if (totalTransactions == 0) {
-                JOptionPane.showMessageDialog(this, "No transactions found for this account.", "Information", JOptionPane.INFORMATION_MESSAGE);
+                tableModel.addRow(new Object[]{"No transactions found", "", "", "", ""});
                 return;
             }
 
@@ -184,7 +193,6 @@ public class TransactionHistoryPanel extends JPanel {
                 JOptionPane.showMessageDialog(this, message, "Information", JOptionPane.INFORMATION_MESSAGE);
             }
 
-            tableModel.setRowCount(0);
             List<Transaction> transactions = bankingSystem.getLastNTransactions(accountNumber, n);
 
             java.util.Collections.reverse(transactions);

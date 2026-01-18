@@ -1,5 +1,6 @@
 package com.banking.ui;
 
+import com.banking.Account;
 import com.banking.BankingSystem;
 import com.banking.Main;
 import com.banking.Transaction;
@@ -19,6 +20,8 @@ public class UserDashboard extends JFrame {
     private JLabel statusLabel;
     private JTable recentTransactionsTable;
     private DefaultTableModel transactionTableModel;
+    private JLabel welcomeLabel;
+    private JLabel usernameLabel;
 
     public UserDashboard() {
         this.bankingSystem = Main.bankingSystem;
@@ -42,11 +45,23 @@ public class UserDashboard extends JFrame {
         headerPanel.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(0, 102, 204)),
             BorderFactory.createEmptyBorder(10, 15, 10, 15)));
-        String holderName = bankingSystem.getAccountHolderName(accountNumber);
-        JLabel welcomeLabel = new JLabel("Welcome, " + holderName);
+        Account account = bankingSystem.getAccount(accountNumber);
+        String holderName = account.getHolderName();
+        String username = account.getUsername();
+        
+        JPanel welcomePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        welcomePanel.setBackground(new Color(245, 245, 250));
+        welcomeLabel = new JLabel("Welcome, " + holderName + " ");
         welcomeLabel.setFont(new Font("Arial", Font.BOLD, 22));
         welcomeLabel.setForeground(new Color(0, 70, 150));
-        headerPanel.add(welcomeLabel, BorderLayout.WEST);
+        welcomePanel.add(welcomeLabel);
+        
+        usernameLabel = new JLabel("@" + username);
+        usernameLabel.setFont(new Font("Arial", Font.PLAIN, 14));
+        usernameLabel.setForeground(new Color(100, 100, 120));
+        welcomePanel.add(usernameLabel);
+        
+        headerPanel.add(welcomePanel, BorderLayout.WEST);
 
         JButton logoutButton = new JButton("Logout");
         logoutButton.setPreferredSize(new Dimension(110, 40));
@@ -160,12 +175,47 @@ public class UserDashboard extends JFrame {
 
         JButton updateInfoButton = createMenuButton("Update Account Info", new Color(0, 102, 204));
         updateInfoButton.addActionListener(e -> {
-            String newName = JOptionPane.showInputDialog(this, "Enter New Holder Name:", "Update Account Info", JOptionPane.QUESTION_MESSAGE);
-            if (newName != null && !newName.trim().isEmpty()) {
+            Account currentAccount = bankingSystem.getAccount(accountNumber);
+            String currentUsername = currentAccount.getUsername();
+            String currentHolderName = currentAccount.getHolderName();
+            
+            JPanel updatePanel = new JPanel(new GridBagLayout());
+            updatePanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(5, 5, 5, 5);
+            gbc.anchor = GridBagConstraints.WEST;
+            
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            updatePanel.add(new JLabel("Username:"), gbc);
+            gbc.gridx = 1;
+            JTextField usernameField = new JTextField(currentUsername, 20);
+            updatePanel.add(usernameField, gbc);
+            
+            gbc.gridx = 0;
+            gbc.gridy = 1;
+            updatePanel.add(new JLabel("Holder Name:"), gbc);
+            gbc.gridx = 1;
+            JTextField holderNameField = new JTextField(currentHolderName, 20);
+            updatePanel.add(holderNameField, gbc);
+            
+            int result = JOptionPane.showConfirmDialog(this, updatePanel, "Update Account Info", 
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            
+            if (result == JOptionPane.OK_OPTION) {
+                String newUsername = usernameField.getText().trim();
+                String newHolderName = holderNameField.getText().trim();
+                
                 try {
-                    bankingSystem.updateAccountInfo(accountNumber, newName.trim());
+                    if (!newUsername.isEmpty() && !newUsername.equals(currentUsername)) {
+                        bankingSystem.updateUsername(accountNumber, newUsername);
+                    }
+                    if (!newHolderName.isEmpty() && !newHolderName.equals(currentHolderName)) {
+                        bankingSystem.updateAccountInfo(accountNumber, newHolderName);
+                    }
                     JOptionPane.showMessageDialog(this, "Account information updated successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
                     refreshAccountInfo();
+                    updateHeader();
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -273,7 +323,14 @@ public class UserDashboard extends JFrame {
             @Override
             public Component prepareRenderer(javax.swing.table.TableCellRenderer renderer, int row, int column) {
                 Component c = super.prepareRenderer(renderer, row, column);
-                if (!isRowSelected(row)) {
+                String firstCellValue = getValueAt(row, 0) != null ? getValueAt(row, 0).toString() : "";
+                if (firstCellValue.equals("No transactions")) {
+                    c.setBackground(new Color(250, 250, 250));
+                    c.setForeground(new Color(150, 150, 150));
+                    if (c instanceof JLabel) {
+                        ((JLabel) c).setHorizontalAlignment(SwingConstants.CENTER);
+                    }
+                } else if (!isRowSelected(row)) {
                     c.setBackground(row % 2 == 0 ? Color.WHITE : new Color(248, 248, 252));
                 } else {
                     c.setBackground(new Color(0, 102, 204));
@@ -319,6 +376,7 @@ public class UserDashboard extends JFrame {
         List<Transaction> transactions = bankingSystem.getLastNTransactions(accountNumber, 5);
         
         if (transactions.isEmpty()) {
+            transactionTableModel.addRow(new Object[]{"No transactions", "", "", ""});
             return;
         }
         
@@ -340,6 +398,14 @@ public class UserDashboard extends JFrame {
         loadRecentTransactions();
         java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("MMM dd, yyyy HH:mm:ss");
         statusLabel.setText("Last updated: " + sdf.format(new java.util.Date()));
+    }
+    
+    private void updateHeader() {
+        Account account = bankingSystem.getAccount(accountNumber);
+        String holderName = account.getHolderName();
+        String username = account.getUsername();
+        welcomeLabel.setText("Welcome, " + holderName + " ");
+        usernameLabel.setText("@" + username);
     }
 
     public void setStatus(String message) {

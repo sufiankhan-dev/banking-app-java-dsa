@@ -118,32 +118,22 @@ public class AccountInfoPanel extends JPanel {
 
     public void refresh() {
         try {
-            String info = bankingSystem.displayAccountInfo(accountNumber);
-            String[] parts = info.split("\\|");
+            com.banking.Account account = bankingSystem.getAccount(accountNumber);
+            accountNumberLabel.setText(account.getAccountNumber());
+            holderNameLabel.setText(account.getHolderName());
+            balanceLabel.setText("$" + String.format("%.2f", account.getBalance()));
             
-            for (String part : parts) {
-                part = part.trim();
-                if (part.startsWith("Account Number:")) {
-                    accountNumberLabel.setText(part.substring("Account Number:".length()).trim());
-                } else if (part.startsWith("Holder:")) {
-                    holderNameLabel.setText(part.substring("Holder:".length()).trim());
-                } else if (part.startsWith("Balance:")) {
-                    String balanceText = part.substring("Balance:".length()).trim();
-                    balanceLabel.setText(balanceText);
-                } else if (part.startsWith("Status:")) {
-                    String status = part.substring("Status:".length()).trim();
-                    statusLabel.setText(status);
-                    if (status.equals("ACTIVE")) {
-                        statusLabel.setForeground(new Color(0, 102, 204));
-                        statusLabel.setFont(new Font("Arial", Font.BOLD, 15));
-                    } else if (status.equals("FROZEN")) {
-                        statusLabel.setForeground(new Color(204, 102, 0));
-                        statusLabel.setFont(new Font("Arial", Font.BOLD, 15));
-                    } else {
-                        statusLabel.setForeground(new Color(150, 150, 150));
-                        statusLabel.setFont(new Font("Arial", Font.BOLD, 15));
-                    }
-                }
+            String status = account.getStatus().toString();
+            statusLabel.setText(status);
+            if (status.equals("ACTIVE")) {
+                statusLabel.setForeground(new Color(0, 102, 204));
+                statusLabel.setFont(new Font("Arial", Font.BOLD, 15));
+            } else if (status.equals("FROZEN")) {
+                statusLabel.setForeground(new Color(204, 102, 0));
+                statusLabel.setFont(new Font("Arial", Font.BOLD, 15));
+            } else {
+                statusLabel.setForeground(new Color(150, 150, 150));
+                statusLabel.setFont(new Font("Arial", Font.BOLD, 15));
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error loading account info: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

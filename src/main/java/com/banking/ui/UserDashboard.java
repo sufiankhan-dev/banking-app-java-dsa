@@ -33,17 +33,20 @@ public class UserDashboard extends JFrame {
 
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(new Color(245, 245, 250));
+        headerPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(0, 102, 204)),
+            BorderFactory.createEmptyBorder(10, 15, 10, 15)));
         String holderName = bankingSystem.getAccountHolderName(accountNumber);
         JLabel welcomeLabel = new JLabel("Welcome, " + holderName);
-        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 22));
         welcomeLabel.setForeground(new Color(0, 70, 150));
         headerPanel.add(welcomeLabel, BorderLayout.WEST);
 
         JButton logoutButton = new JButton("Logout");
-        logoutButton.setPreferredSize(new Dimension(100, 35));
+        logoutButton.setPreferredSize(new Dimension(110, 40));
         logoutButton.setBackground(new Color(0, 70, 150));
         logoutButton.setForeground(Color.WHITE);
-        logoutButton.setFont(new Font("Arial", Font.BOLD, 12));
+        logoutButton.setFont(new Font("Arial", Font.BOLD, 13));
         logoutButton.setFocusPainted(false);
         logoutButton.setOpaque(true);
         logoutButton.setContentAreaFilled(true);
@@ -57,14 +60,15 @@ public class UserDashboard extends JFrame {
         });
         headerPanel.add(logoutButton, BorderLayout.EAST);
 
-        JPanel buttonPanel = new JPanel(new GridLayout(6, 1, 10, 10));
+        JPanel buttonPanel = new JPanel(new GridLayout(6, 1, 12, 12));
         buttonPanel.setBackground(new Color(255, 255, 255));
         buttonPanel.setBorder(BorderFactory.createTitledBorder(
             BorderFactory.createEtchedBorder(), "Banking Operations",
             javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
             javax.swing.border.TitledBorder.DEFAULT_POSITION,
-            new Font("Arial", Font.BOLD, 13),
+            new Font("Arial", Font.BOLD, 14),
             new Color(0, 70, 150)));
+        buttonPanel.setPreferredSize(new Dimension(220, 0));
 
         JButton depositButton = createMenuButton("Deposit Money", new Color(0, 102, 204));
         depositButton.addActionListener(e -> {
@@ -194,19 +198,31 @@ public class UserDashboard extends JFrame {
         buttonPanel.add(changePinButton);
 
         accountInfoPanel = new AccountInfoPanel(accountNumber);
-        accountInfoPanel.setBorder(BorderFactory.createTitledBorder("Account Information"));
+        accountInfoPanel.setBorder(BorderFactory.createTitledBorder(
+            BorderFactory.createEtchedBorder(), "Account Information",
+            javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
+            javax.swing.border.TitledBorder.DEFAULT_POSITION,
+            new Font("Arial", Font.BOLD, 14),
+            new Color(0, 70, 150)));
 
         statusLabel = new JLabel("Ready");
-        statusLabel.setBorder(BorderFactory.createLoweredBevelBorder());
-        statusLabel.setPreferredSize(new Dimension(0, 30));
-        statusLabel.setBackground(new Color(240, 240, 240));
+        statusLabel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(200, 200, 200)),
+            BorderFactory.createEmptyBorder(5, 10, 5, 10)));
+        statusLabel.setPreferredSize(new Dimension(0, 35));
+        statusLabel.setBackground(new Color(250, 250, 250));
         statusLabel.setOpaque(true);
-        statusLabel.setForeground(new Color(50, 50, 50));
-        statusLabel.setFont(new Font("Arial", Font.PLAIN, 11));
+        statusLabel.setForeground(new Color(80, 80, 80));
+        statusLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
 
+        JPanel centerContentPanel = new JPanel(new BorderLayout(10, 10));
+        centerContentPanel.setBackground(new Color(245, 245, 250));
+        centerContentPanel.add(accountInfoPanel, BorderLayout.CENTER);
+        
         mainPanel.add(headerPanel, BorderLayout.NORTH);
         mainPanel.add(buttonPanel, BorderLayout.WEST);
-        mainPanel.add(accountInfoPanel, BorderLayout.CENTER);
+        mainPanel.add(centerContentPanel, BorderLayout.CENTER);
         mainPanel.add(statusLabel, BorderLayout.SOUTH);
 
         add(mainPanel);
@@ -214,7 +230,7 @@ public class UserDashboard extends JFrame {
 
     private JButton createMenuButton(String text, Color bgColor) {
         JButton button = new JButton(text);
-        button.setPreferredSize(new Dimension(200, 50));
+        button.setPreferredSize(new Dimension(200, 55));
         button.setBackground(bgColor);
         button.setForeground(Color.WHITE);
         button.setFont(new Font("Arial", Font.BOLD, 13));
@@ -228,7 +244,8 @@ public class UserDashboard extends JFrame {
 
     public void refreshAccountInfo() {
         accountInfoPanel.refresh();
-        statusLabel.setText("Last updated: " + new java.util.Date().toString());
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("MMM dd, yyyy HH:mm:ss");
+        statusLabel.setText("Last updated: " + sdf.format(new java.util.Date()));
     }
 
     public void setStatus(String message) {

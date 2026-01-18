@@ -81,7 +81,7 @@ public class TransactionHistoryPanel extends JPanel {
         filterButton.addActionListener(e -> filterTransactions());
         filterPanel.add(filterButton);
         showAllButton = new JButton("Show All");
-        showAllButton.setBackground(new Color(102, 102, 102));
+        showAllButton.setBackground(new Color(0, 102, 204));
         showAllButton.setForeground(Color.WHITE);
         showAllButton.setFont(new Font("Arial", Font.BOLD, 11));
         showAllButton.setFocusPainted(false);

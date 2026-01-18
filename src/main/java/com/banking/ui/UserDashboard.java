@@ -41,7 +41,7 @@ public class UserDashboard extends JFrame {
 
         JButton logoutButton = new JButton("Logout");
         logoutButton.setPreferredSize(new Dimension(100, 35));
-        logoutButton.setBackground(new Color(180, 0, 0));
+        logoutButton.setBackground(new Color(0, 70, 150));
         logoutButton.setForeground(Color.WHITE);
         logoutButton.setFont(new Font("Arial", Font.BOLD, 12));
         logoutButton.setFocusPainted(false);
@@ -66,7 +66,7 @@ public class UserDashboard extends JFrame {
             new Font("Arial", Font.BOLD, 13),
             new Color(0, 70, 150)));
 
-        JButton depositButton = createMenuButton("Deposit Money", new Color(0, 153, 76));
+        JButton depositButton = createMenuButton("Deposit Money", new Color(0, 102, 204));
         depositButton.addActionListener(e -> {
             String amountText = JOptionPane.showInputDialog(this, "Enter Amount to Deposit:", "Deposit Money", JOptionPane.QUESTION_MESSAGE);
             if (amountText == null || amountText.trim().isEmpty()) return;
@@ -89,7 +89,7 @@ public class UserDashboard extends JFrame {
             }
         });
 
-        JButton withdrawButton = createMenuButton("Withdraw Money", new Color(204, 102, 0));
+        JButton withdrawButton = createMenuButton("Withdraw Money", new Color(0, 102, 204));
         withdrawButton.addActionListener(e -> {
             String amountText = JOptionPane.showInputDialog(this, "Enter Amount to Withdraw:", "Withdraw Money", JOptionPane.QUESTION_MESSAGE);
             if (amountText == null || amountText.trim().isEmpty()) return;
@@ -112,7 +112,7 @@ public class UserDashboard extends JFrame {
             }
         });
 
-        JButton transferButton = createMenuButton("Transfer Funds", new Color(153, 0, 153));
+        JButton transferButton = createMenuButton("Transfer Funds", new Color(0, 102, 204));
         transferButton.addActionListener(e -> {
             String receiverAccount = JOptionPane.showInputDialog(this, "Enter Receiver Account Number:", "Transfer Funds", JOptionPane.QUESTION_MESSAGE);
             if (receiverAccount == null || receiverAccount.trim().isEmpty()) return;
@@ -141,7 +141,7 @@ public class UserDashboard extends JFrame {
         JButton viewInfoButton = createMenuButton("View Account Information", new Color(0, 102, 204));
         viewInfoButton.addActionListener(e -> refreshAccountInfo());
 
-        JButton viewHistoryButton = createMenuButton("View Transaction History", new Color(102, 102, 102));
+        JButton viewHistoryButton = createMenuButton("View Transaction History", new Color(0, 102, 204));
         viewHistoryButton.addActionListener(e -> {
             TransactionHistoryPanel historyPanel = new TransactionHistoryPanel(accountNumber);
             JDialog historyDialog = new JDialog(this, "Transaction History", true);
@@ -151,7 +151,7 @@ public class UserDashboard extends JFrame {
             historyDialog.setVisible(true);
         });
 
-        JButton updateInfoButton = createMenuButton("Update Account Info", new Color(0, 153, 153));
+        JButton updateInfoButton = createMenuButton("Update Account Info", new Color(0, 102, 204));
         updateInfoButton.addActionListener(e -> {
             String newName = JOptionPane.showInputDialog(this, "Enter New Holder Name:", "Update Account Info", JOptionPane.QUESTION_MESSAGE);
             if (newName != null && !newName.trim().isEmpty()) {
@@ -165,7 +165,7 @@ public class UserDashboard extends JFrame {
             }
         });
 
-        JButton changePinButton = createMenuButton("Change PIN", new Color(153, 153, 0));
+        JButton changePinButton = createMenuButton("Change PIN", new Color(0, 102, 204));
         changePinButton.addActionListener(e -> {
             String oldPin = JOptionPane.showInputDialog(this, "Enter Current PIN:", "Change PIN", JOptionPane.QUESTION_MESSAGE);
             if (oldPin == null) return;

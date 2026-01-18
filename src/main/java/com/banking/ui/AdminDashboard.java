@@ -40,12 +40,12 @@ public class AdminDashboard extends JFrame {
         headerPanel.setBackground(new Color(245, 245, 250));
         JLabel titleLabel = new JLabel("Admin Dashboard");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setForeground(new Color(180, 80, 0));
+        titleLabel.setForeground(new Color(0, 70, 150));
         headerPanel.add(titleLabel, BorderLayout.WEST);
 
         JButton exitButton = new JButton("Exit Admin Mode");
         exitButton.setPreferredSize(new Dimension(150, 35));
-        exitButton.setBackground(new Color(180, 0, 0));
+        exitButton.setBackground(new Color(0, 70, 150));
         exitButton.setForeground(Color.WHITE);
         exitButton.setFont(new Font("Arial", Font.BOLD, 12));
         exitButton.setFocusPainted(false);
@@ -67,28 +67,28 @@ public class AdminDashboard extends JFrame {
             javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
             javax.swing.border.TitledBorder.DEFAULT_POSITION,
             new Font("Arial", Font.BOLD, 13),
-            new Color(180, 80, 0)));
+            new Color(0, 70, 150)));
         buttonPanel.setPreferredSize(new Dimension(250, 0));
 
         JButton viewAllButton = createAdminButton("View All Accounts", new Color(0, 102, 204));
         viewAllButton.addActionListener(e -> loadAllAccounts());
 
-        JButton searchButton = createAdminButton("Search Account", new Color(0, 153, 76));
+        JButton searchButton = createAdminButton("Search Account", new Color(0, 102, 204));
         searchButton.addActionListener(e -> searchAccounts());
 
-        JButton freezeButton = createAdminButton("Freeze Account", new Color(204, 102, 0));
+        JButton freezeButton = createAdminButton("Freeze Account", new Color(0, 102, 204));
         freezeButton.addActionListener(e -> freezeAccount());
 
-        JButton unfreezeButton = createAdminButton("Unfreeze Account", new Color(153, 153, 0));
+        JButton unfreezeButton = createAdminButton("Unfreeze Account", new Color(0, 102, 204));
         unfreezeButton.addActionListener(e -> unfreezeAccount());
 
-        JButton closeAccountButton = createAdminButton("Close Account", new Color(204, 0, 0));
+        JButton closeAccountButton = createAdminButton("Close Account", new Color(0, 102, 204));
         closeAccountButton.addActionListener(e -> closeAccount());
 
-        JButton viewFrozenButton = createAdminButton("View Frozen Accounts", new Color(153, 0, 153));
+        JButton viewFrozenButton = createAdminButton("View Frozen Accounts", new Color(0, 102, 204));
         viewFrozenButton.addActionListener(e -> viewFrozenAccounts());
 
-        JButton statisticsButton = createAdminButton("Bank Statistics", new Color(102, 102, 102));
+        JButton statisticsButton = createAdminButton("Bank Statistics", new Color(0, 102, 204));
         statisticsButton.addActionListener(e -> updateStatistics());
 
         buttonPanel.add(viewAllButton);

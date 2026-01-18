@@ -94,7 +94,7 @@ public class MainWindow extends JFrame {
 
         JButton createAccountButton = new JButton("Create New Account");
         createAccountButton.setPreferredSize(new Dimension(180, 40));
-        createAccountButton.setBackground(new Color(0, 120, 60));
+        createAccountButton.setBackground(new Color(0, 102, 204));
         createAccountButton.setForeground(Color.WHITE);
         createAccountButton.setFont(new Font("Arial", Font.BOLD, 13));
         createAccountButton.setFocusPainted(false);
@@ -109,7 +109,7 @@ public class MainWindow extends JFrame {
 
         JButton adminLoginButton = new JButton("Admin Login");
         adminLoginButton.setPreferredSize(new Dimension(180, 40));
-        adminLoginButton.setBackground(new Color(180, 80, 0));
+        adminLoginButton.setBackground(new Color(0, 102, 204));
         adminLoginButton.setForeground(Color.WHITE);
         adminLoginButton.setFont(new Font("Arial", Font.BOLD, 13));
         adminLoginButton.setFocusPainted(false);

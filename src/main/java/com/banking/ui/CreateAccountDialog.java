@@ -131,7 +131,7 @@ public class CreateAccountDialog extends JDialog {
         buttonPanel.setBackground(new Color(245, 245, 250));
         createButton = new JButton("Create Account");
         createButton.setPreferredSize(new Dimension(130, 40));
-        createButton.setBackground(new Color(0, 120, 60));
+        createButton.setBackground(new Color(0, 102, 204));
         createButton.setForeground(Color.WHITE);
         createButton.setFont(new Font("Arial", Font.BOLD, 13));
         createButton.setFocusPainted(false);

@@ -111,11 +111,11 @@ public class AccountInfoPanel extends JPanel {
                     String status = part.substring("Status:".length()).trim();
                     statusLabel.setText(status);
                     if (status.equals("ACTIVE")) {
-                        statusLabel.setForeground(new Color(0, 153, 76));
+                        statusLabel.setForeground(new Color(0, 102, 204));
                     } else if (status.equals("FROZEN")) {
-                        statusLabel.setForeground(new Color(204, 102, 0));
+                        statusLabel.setForeground(new Color(0, 70, 150));
                     } else {
-                        statusLabel.setForeground(Color.RED);
+                        statusLabel.setForeground(new Color(0, 70, 150));
                     }
                 }
             }

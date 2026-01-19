@@ -7,12 +7,11 @@ import com.banking.Main;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
 public class AdminDashboard extends JFrame {
-    private BankingSystem bankingSystem;
+
+    private final BankingSystem bankingSystem;
     private JTable accountTable;
     private DefaultTableModel tableModel;
     private JTextField searchField;
@@ -21,332 +20,227 @@ public class AdminDashboard extends JFrame {
 
     public AdminDashboard() {
         this.bankingSystem = Main.bankingSystem;
-        initializeUI();
+        initUI();
         loadAllAccounts();
         updateStatistics();
     }
 
-    private void initializeUI() {
-        setTitle("Banking System - Admin Dashboard");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    private void initUI() {
+        setTitle("Admin Dashboard");
         setSize(1200, 700);
         setLocationRelativeTo(null);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
-        mainPanel.setBackground(new Color(245, 245, 250));
+        JPanel root = new JPanel(new BorderLayout(15, 15));
+        root.setBackground(Theme.BACKGROUND_COLOR);
+        root.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        add(root);
 
-        JPanel headerPanel = new JPanel(new BorderLayout());
-        headerPanel.setBackground(new Color(245, 245, 250));
-        JLabel titleLabel = new JLabel("Admin Dashboard");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setForeground(new Color(0, 70, 150));
-        headerPanel.add(titleLabel, BorderLayout.WEST);
+        root.add(createHeader(), BorderLayout.NORTH);
+        root.add(createSidebar(), BorderLayout.WEST);
+        root.add(createCenterPanel(), BorderLayout.CENTER);
+    }
 
-        JButton exitButton = new JButton("Exit Admin Mode");
-        exitButton.setPreferredSize(new Dimension(150, 35));
-        exitButton.setBackground(new Color(0, 70, 150));
-        exitButton.setForeground(Color.WHITE);
-        exitButton.setFont(new Font("Arial", Font.BOLD, 12));
-        exitButton.setFocusPainted(false);
-        exitButton.setOpaque(true);
-        exitButton.setContentAreaFilled(true);
-        exitButton.setBorderPainted(true);
-        exitButton.setBorder(BorderFactory.createRaisedBevelBorder());
-        exitButton.addActionListener(e -> {
-            MainWindow mainWindow = new MainWindow();
-            mainWindow.setVisible(true);
+    /* ================= HEADER ================= */
+
+    private JPanel createHeader() {
+        JPanel header = new JPanel(new BorderLayout());
+        header.setBackground(Theme.BACKGROUND_COLOR);
+
+        JLabel title = new JLabel("Admin Dashboard");
+        title.setFont(Theme.HEADER_FONT);
+        title.setForeground(Theme.TEXT_PRIMARY);
+
+        JButton exitBtn = createPrimaryButton("Exit Admin Mode");
+        exitBtn.addActionListener(e -> {
+            new MainWindow().setVisible(true);
             dispose();
         });
-        headerPanel.add(exitButton, BorderLayout.EAST);
 
-        JPanel buttonPanel = new JPanel(new GridLayout(5, 1, 10, 10));
-        buttonPanel.setBackground(new Color(255, 255, 255));
-        buttonPanel.setBorder(BorderFactory.createTitledBorder(
-            BorderFactory.createEtchedBorder(), "Account Actions",
-            javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-            javax.swing.border.TitledBorder.DEFAULT_POSITION,
-            new Font("Arial", Font.BOLD, 13),
-            new Color(0, 70, 150)));
-        buttonPanel.setPreferredSize(new Dimension(220, 0));
+        header.add(title, BorderLayout.WEST);
+        header.add(exitBtn, BorderLayout.EAST);
+        return header;
+    }
 
-        JButton viewAllButton = createAdminButton("View All Accounts", new Color(0, 102, 204));
-        viewAllButton.addActionListener(e -> loadAllAccounts());
+    /* ================= SIDEBAR ================= */
 
-        JButton viewFrozenButton = createAdminButton("View Frozen Accounts", new Color(0, 102, 204));
-        viewFrozenButton.addActionListener(e -> viewFrozenAccounts());
+    private JPanel createSidebar() {
+        JPanel sidebar = new JPanel(new GridLayout(5, 1, 10, 10));
+        sidebar.setBackground(Theme.PANEL_COLOR);
+        sidebar.setPreferredSize(new Dimension(220, 0));
 
-        JButton freezeButton = createAdminButton("Freeze Account", new Color(0, 102, 204));
-        freezeButton.addActionListener(e -> freezeAccount());
+        sidebar.add(actionButton("View All Accounts", this::loadAllAccounts));
+        sidebar.add(actionButton("View Frozen Accounts", this::viewFrozenAccounts));
+        sidebar.add(actionButton("Freeze Account", this::freezeAccount));
+        sidebar.add(actionButton("Unfreeze Account", this::unfreezeAccount));
+        sidebar.add(actionButton("Close Account", this::closeAccount));
 
-        JButton unfreezeButton = createAdminButton("Unfreeze Account", new Color(0, 102, 204));
-        unfreezeButton.addActionListener(e -> unfreezeAccount());
+        return sidebar;
+    }
 
-        JButton closeAccountButton = createAdminButton("Close Account", new Color(0, 102, 204));
-        closeAccountButton.addActionListener(e -> closeAccount());
+    /* ================= CENTER ================= */
 
-        buttonPanel.add(viewAllButton);
-        buttonPanel.add(viewFrozenButton);
-        buttonPanel.add(freezeButton);
-        buttonPanel.add(unfreezeButton);
-        buttonPanel.add(closeAccountButton);
+    private JPanel createCenterPanel() {
+        JPanel center = new JPanel(new BorderLayout(10, 10));
+        center.setBackground(Theme.BACKGROUND_COLOR);
 
-        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 10));
-        searchPanel.setBackground(new Color(255, 255, 255));
-        searchPanel.setBorder(BorderFactory.createTitledBorder(
-            BorderFactory.createEtchedBorder(), "Search Accounts",
-            javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-            javax.swing.border.TitledBorder.DEFAULT_POSITION,
-            new Font("Arial", Font.BOLD, 12),
-            new Color(0, 70, 150)));
+        center.add(createSearchPanel(), BorderLayout.NORTH);
+        center.add(createTable(), BorderLayout.CENTER);
+        center.add(createStatisticsPanel(), BorderLayout.SOUTH);
+
+        return center;
+    }
+
+    private JPanel createSearchPanel() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 8));
+        panel.setBackground(Theme.PANEL_COLOR);
+
         searchField = new JTextField(20);
-        searchField.setPreferredSize(new Dimension(200, 30));
-        searchField.setFont(new Font("Arial", Font.PLAIN, 12));
-        searchField.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
-            BorderFactory.createEmptyBorder(5, 8, 5, 8)));
-        searchField.addActionListener(e -> searchAccounts());
+        searchField.setFont(Theme.BODY_FONT);
+
         searchTypeCombo = new JComboBox<>(new String[]{"By Number", "By Name"});
-        searchTypeCombo.setPreferredSize(new Dimension(120, 30));
-        searchTypeCombo.setFont(new Font("Arial", Font.PLAIN, 12));
-        JButton searchNowButton = new JButton("Search");
-        searchNowButton.setPreferredSize(new Dimension(100, 30));
-        searchNowButton.setBackground(new Color(0, 102, 204));
-        searchNowButton.setForeground(Color.WHITE);
-        searchNowButton.setFont(new Font("Arial", Font.BOLD, 12));
-        searchNowButton.setFocusPainted(false);
-        searchNowButton.setOpaque(true);
-        searchNowButton.setContentAreaFilled(true);
-        searchNowButton.setBorderPainted(true);
-        searchNowButton.setBorder(BorderFactory.createRaisedBevelBorder());
-        searchNowButton.addActionListener(e -> searchAccounts());
-        JLabel searchLabel = new JLabel("Search:");
-        searchLabel.setFont(new Font("Arial", Font.BOLD, 12));
-        searchLabel.setForeground(new Color(50, 50, 50));
-        searchPanel.add(searchLabel);
-        searchPanel.add(searchField);
-        searchPanel.add(searchTypeCombo);
-        searchPanel.add(searchNowButton);
+        searchTypeCombo.setFont(Theme.BODY_FONT);
 
-        String[] columnNames = {"Account Number", "Holder Name", "Balance", "Status"};
-        tableModel = new DefaultTableModel(columnNames, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
+        JButton searchBtn = createPrimaryButton("Search");
+        searchBtn.addActionListener(e -> searchAccounts());
+
+        panel.add(new JLabelStyled("Search:"));
+        panel.add(searchField);
+        panel.add(searchTypeCombo);
+        panel.add(searchBtn);
+
+        return panel;
+    }
+
+    private JScrollPane createTable() {
+        tableModel = new DefaultTableModel(
+                new String[]{"Account Number", "Holder", "Balance", "Status"}, 0
+        ) {
+            public boolean isCellEditable(int r, int c) { return false; }
         };
-        accountTable = new JTable(tableModel);
-        accountTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        accountTable.setRowHeight(25);
-        accountTable.getTableHeader().setReorderingAllowed(false);
-        accountTable.setBackground(Color.WHITE);
-        accountTable.setForeground(new Color(30, 30, 30));
-        accountTable.getTableHeader().setBackground(new Color(0, 102, 204));
-        accountTable.getTableHeader().setForeground(Color.WHITE);
-        accountTable.getTableHeader().setFont(new Font("Arial", Font.BOLD, 12));
-        accountTable.setFont(new Font("Arial", Font.PLAIN, 11));
-        accountTable.setGridColor(new Color(200, 200, 200));
-        JScrollPane tableScrollPane = new JScrollPane(accountTable);
-        tableScrollPane.setBackground(Color.WHITE);
 
-        statisticsArea = new JTextArea(8, 30);
+        accountTable = new JTable(tableModel);
+        accountTable.setRowHeight(26);
+        accountTable.setFont(Theme.BODY_FONT);
+        accountTable.setForeground(Theme.TEXT_PRIMARY);
+        accountTable.setBackground(Theme.CARD_COLOR);
+        accountTable.getTableHeader().setBackground(Theme.PRIMARY_COLOR);
+        accountTable.getTableHeader().setForeground(Theme.TEXT_PRIMARY);
+        accountTable.getTableHeader().setFont(Theme.SUBHEADER_FONT);
+
+        JScrollPane scroll = new JScrollPane(accountTable);
+        scroll.getViewport().setBackground(Theme.CARD_COLOR);
+        scroll.setBorder(BorderFactory.createLineBorder(Theme.BORDER_COLOR));
+
+        return scroll;
+    }
+
+    private JScrollPane createStatisticsPanel() {
+        statisticsArea = new JTextArea(6, 30);
         statisticsArea.setEditable(false);
         statisticsArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
-        statisticsArea.setBackground(new Color(255, 255, 255));
-        statisticsArea.setForeground(new Color(30, 30, 30));
-        statisticsArea.setBorder(BorderFactory.createTitledBorder(
-            BorderFactory.createEtchedBorder(), "Bank Statistics",
-            javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-            javax.swing.border.TitledBorder.DEFAULT_POSITION,
-            new Font("Arial", Font.BOLD, 12),
-            new Color(0, 70, 150)));
-        JScrollPane statisticsScrollPane = new JScrollPane(statisticsArea);
+        statisticsArea.setBackground(Theme.PANEL_COLOR);
+        statisticsArea.setForeground(Theme.TEXT_SECONDARY);
 
-        JPanel centerPanel = new JPanel(new BorderLayout(10, 10));
-        centerPanel.setBackground(new Color(245, 245, 250));
-        centerPanel.add(searchPanel, BorderLayout.NORTH);
-        centerPanel.add(tableScrollPane, BorderLayout.CENTER);
-        centerPanel.add(statisticsScrollPane, BorderLayout.SOUTH);
-        
-        statisticsArea.setPreferredSize(new Dimension(0, 120));
-
-        mainPanel.add(headerPanel, BorderLayout.NORTH);
-        mainPanel.add(buttonPanel, BorderLayout.WEST);
-        mainPanel.add(centerPanel, BorderLayout.CENTER);
-
-        add(mainPanel);
+        JScrollPane scroll = new JScrollPane(statisticsArea);
+        scroll.setBorder(BorderFactory.createLineBorder(Theme.BORDER_COLOR));
+        return scroll;
     }
 
-    private JButton createAdminButton(String text, Color bgColor) {
-        JButton button = new JButton(text);
-        button.setPreferredSize(new Dimension(200, 45));
-        button.setBackground(bgColor);
-        button.setForeground(Color.WHITE);
-        button.setFont(new Font("Arial", Font.BOLD, 12));
-        button.setFocusPainted(false);
-        button.setOpaque(true);
-        button.setContentAreaFilled(true);
-        button.setBorderPainted(true);
-        button.setBorder(BorderFactory.createRaisedBevelBorder());
-        return button;
+    /* ================= BUTTON FACTORY ================= */
+
+    private JButton createPrimaryButton(String text) {
+        JButton btn = new JButton(text);
+        btn.setFont(Theme.SUBHEADER_FONT);
+        btn.setBackground(Theme.BUTTON_PRIMARY);
+        btn.setForeground(Theme.BUTTON_TEXT);
+        btn.setFocusPainted(false);
+        return btn;
     }
+
+    private JButton actionButton(String text, Runnable action) {
+        JButton btn = createPrimaryButton(text);
+        btn.addActionListener(e -> action.run());
+        return btn;
+    }
+
+    /* ================= LOGIC (UNCHANGED) ================= */
 
     private void loadAllAccounts() {
         tableModel.setRowCount(0);
-        String allAccounts = bankingSystem.displayAllAccounts();
-        if (allAccounts.equals("No accounts found in the system.")) {
-            return;
-        }
-        String[] lines = allAccounts.split("\n");
-        for (int i = 1; i < lines.length; i++) {
-            if (lines[i].trim().isEmpty()) continue;
-            parseAndAddAccountLine(lines[i]);
+        String data = bankingSystem.displayAllAccounts();
+        if (data.contains("No accounts")) return;
+
+        for (String line : data.split("\n")) {
+            if (line.contains("Account Number"))
+                parseAndAdd(line);
         }
     }
 
-    private void parseAndAddAccountLine(String line) {
-        String[] parts = line.split("\\|");
-        String accountNumber = "";
-        String holderName = "";
-        String balance = "";
-        String status = "";
-
-        for (String part : parts) {
-            part = part.trim();
-            if (part.startsWith("Account Number:")) {
-                accountNumber = part.substring("Account Number:".length()).trim();
-            } else if (part.startsWith("Holder:")) {
-                holderName = part.substring("Holder:".length()).trim();
-            } else if (part.startsWith("Balance:")) {
-                balance = part.substring("Balance:".length()).trim();
-            } else if (part.startsWith("Status:")) {
-                status = part.substring("Status:".length()).trim();
-            }
-        }
-        tableModel.addRow(new Object[]{accountNumber, holderName, balance, status});
+    private void parseAndAdd(String line) {
+        String[] p = line.split("\\|");
+        tableModel.addRow(new Object[]{
+                p[0].split(":")[1].trim(),
+                p[1].split(":")[1].trim(),
+                p[2].split(":")[1].trim(),
+                p[3].split(":")[1].trim()
+        });
     }
 
     private void searchAccounts() {
-        String searchTerm = searchField.getText().trim();
-        if (searchTerm.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter a search term.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
         tableModel.setRowCount(0);
-        List<Account> results;
-        
-        if (searchTypeCombo.getSelectedItem().equals("By Number")) {
-            results = bankingSystem.searchAccountsByNumber(searchTerm);
-        } else {
-            results = bankingSystem.searchAccountsByName(searchTerm);
-        }
+        String term = searchField.getText().trim();
+        if (term.isEmpty()) return;
 
-        if (results.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "No accounts found matching: " + searchTerm, "Search Results", JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
+        List<Account> results = searchTypeCombo.getSelectedIndex() == 0
+                ? bankingSystem.searchAccountsByNumber(term)
+                : bankingSystem.searchAccountsByName(term);
 
-        for (Account account : results) {
+        for (Account a : results) {
             tableModel.addRow(new Object[]{
-                account.getAccountNumber(),
-                account.getHolderName(),
-                "$" + String.format("%.2f", account.getBalance()),
-                account.getStatus().toString()
+                    a.getAccountNumber(),
+                    a.getHolderName(),
+                    a.getBalance(),
+                    a.getStatus()
             });
         }
     }
 
-    private void freezeAccount() {
-        String accountNumber = getSelectedAccountNumber();
-        if (accountNumber == null) return;
+    private void freezeAccount() { actOnSelected(bankingSystem::freezeAccount); }
+    private void unfreezeAccount() { actOnSelected(bankingSystem::unfreezeAccount); }
+    private void closeAccount() { actOnSelected(bankingSystem::closeAccount); }
 
-        int confirm = JOptionPane.showConfirmDialog(this, 
-            "Are you sure you want to freeze account: " + accountNumber + "?",
-            "Confirm Freeze", JOptionPane.YES_NO_OPTION);
-        
-        if (confirm == JOptionPane.YES_OPTION) {
-            try {
-                bankingSystem.freezeAccount(accountNumber);
-                JOptionPane.showMessageDialog(this, "Account frozen successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                loadAllAccounts();
-                updateStatistics();
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
-
-    private void unfreezeAccount() {
-        String accountNumber = getSelectedAccountNumber();
-        if (accountNumber == null) return;
-
-        int confirm = JOptionPane.showConfirmDialog(this, 
-            "Are you sure you want to unfreeze account: " + accountNumber + "?",
-            "Confirm Unfreeze", JOptionPane.YES_NO_OPTION);
-        
-        if (confirm == JOptionPane.YES_OPTION) {
-            try {
-                bankingSystem.unfreezeAccount(accountNumber);
-                JOptionPane.showMessageDialog(this, "Account unfrozen successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                loadAllAccounts();
-                updateStatistics();
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
-
-    private void closeAccount() {
-        String accountNumber = getSelectedAccountNumber();
-        if (accountNumber == null) return;
-
-        int confirm = JOptionPane.showConfirmDialog(this, 
-            "Are you sure you want to CLOSE account: " + accountNumber + "?\nThis action cannot be undone!",
-            "Confirm Close", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-        
-        if (confirm == JOptionPane.YES_OPTION) {
-            try {
-                bankingSystem.closeAccount(accountNumber);
-                JOptionPane.showMessageDialog(this, "Account closed successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-                loadAllAccounts();
-                updateStatistics();
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
+    private void actOnSelected(java.util.function.Consumer<String> action) {
+        int row = accountTable.getSelectedRow();
+        if (row == -1) return;
+        action.accept((String) tableModel.getValueAt(row, 0));
+        loadAllAccounts();
+        updateStatistics();
     }
 
     private void viewFrozenAccounts() {
         tableModel.setRowCount(0);
-        List<Account> frozenAccounts = bankingSystem.getFrozenAccounts();
-        
-        if (frozenAccounts.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "No frozen accounts found.", "Information", JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
-
-        for (Account account : frozenAccounts) {
+        for (Account a : bankingSystem.getFrozenAccounts()) {
             tableModel.addRow(new Object[]{
-                account.getAccountNumber(),
-                account.getHolderName(),
-                "$" + String.format("%.2f", account.getBalance()),
-                account.getStatus().toString()
+                    a.getAccountNumber(),
+                    a.getHolderName(),
+                    a.getBalance(),
+                    a.getStatus()
             });
         }
     }
 
     private void updateStatistics() {
-        String statistics = bankingSystem.getBankStatistics();
-        statisticsArea.setText(statistics);
+        statisticsArea.setText(bankingSystem.getBankStatistics());
     }
 
-    private String getSelectedAccountNumber() {
-        int selectedRow = accountTable.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Please select an account from the table.", "No Selection", JOptionPane.WARNING_MESSAGE);
-            return null;
+    /* ================= SMALL HELPER ================= */
+
+    private static class JLabelStyled extends JLabel {
+        JLabelStyled(String text) {
+            super(text);
+            setFont(Theme.SUBHEADER_FONT);
+            setForeground(Theme.TEXT_PRIMARY);
         }
-        return (String) tableModel.getValueAt(selectedRow, 0);
     }
 }

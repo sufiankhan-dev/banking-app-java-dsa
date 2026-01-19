@@ -5,210 +5,199 @@ import com.banking.Main;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class TransactionDialog extends JDialog {
-    public enum TransactionType {
-        DEPOSIT, WITHDRAW, TRANSFER
-    }
 
-    private TransactionType type;
-    private BankingSystem bankingSystem;
-    private String accountNumber;
+    public enum TransactionType { DEPOSIT, WITHDRAW, TRANSFER }
+
+    private final TransactionType type;
+    private final BankingSystem bankingSystem = Main.bankingSystem;
+    private final String accountNumber;
+
     private JTextField amountField;
-    private JTextField receiverAccountField;
+    private JTextField receiverField;
     private JLabel errorLabel;
 
     public TransactionDialog(JFrame parent, TransactionType type) {
-        super(parent, getTitle(type), true);
+        super(parent, title(type), true);
         this.type = type;
-        this.bankingSystem = Main.bankingSystem;
         this.accountNumber = bankingSystem.getCurrentLoggedInAccount();
-        initializeUI();
+        initUI();
     }
 
-    private static String getTitle(TransactionType type) {
-        switch (type) {
-            case DEPOSIT:
-                return "Deposit Money";
-            case WITHDRAW:
-                return "Withdraw Money";
-            case TRANSFER:
-                return "Transfer Funds";
-            default:
-                return "Transaction";
-        }
+    private static String title(TransactionType t) {
+        return switch (t) {
+            case DEPOSIT -> "Deposit Money";
+            case WITHDRAW -> "Withdraw Money";
+            case TRANSFER -> "Transfer Funds";
+        };
     }
 
-    private void initializeUI() {
-        setSize(400, type == TransactionType.TRANSFER ? 250 : 200);
+    private void initUI() {
+        setSize(420, type == TransactionType.TRANSFER ? 260 : 210);
         setLocationRelativeTo(getParent());
         setResizable(false);
-        setFocusable(true);
-        setFocusableWindowState(true);
 
-        JPanel mainPanel = new JPanel(new BorderLayout(15, 15));
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        mainPanel.setBackground(new Color(245, 245, 250));
+        JPanel root = new JPanel(new BorderLayout(15, 15));
+        root.setBackground(Theme.BACKGROUND_COLOR);
+        root.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        add(root);
 
-        JPanel formPanel = new JPanel(new GridBagLayout());
-        formPanel.setBackground(new Color(255, 255, 255));
+        root.add(formPanel(), BorderLayout.CENTER);
+        root.add(buttonPanel(), BorderLayout.SOUTH);
+    }
+
+    private JPanel formPanel() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBackground(Theme.CARD_COLOR);
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.anchor = GridBagConstraints.WEST;
+        gbc.insets = new Insets(8, 8, 8, 8);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        int row = 0;
 
         if (type == TransactionType.TRANSFER) {
-            gbc.gridx = 0;
-            gbc.gridy = 0;
-            JLabel receiverLabel = new JLabel("Receiver Account Number:");
-            receiverLabel.setFont(new Font("Arial", Font.BOLD, 12));
-            receiverLabel.setForeground(new Color(50, 50, 50));
-            formPanel.add(receiverLabel, gbc);
-            gbc.gridx = 1;
-            receiverAccountField = new JTextField(15);
-            receiverAccountField.setFont(new Font("Arial", Font.PLAIN, 12));
-            receiverAccountField.setForeground(Color.BLACK);
-            receiverAccountField.setBackground(Color.WHITE);
-            receiverAccountField.setEnabled(true);
-            receiverAccountField.setEditable(true);
-            formPanel.add(receiverAccountField, gbc);
+            gbc.gridx = 0; gbc.gridy = row;
+            panel.add(label("Receiver Account"), gbc);
 
-            gbc.gridx = 0;
-            gbc.gridy = 1;
-            JLabel amountLabel1 = new JLabel("Amount:");
-            amountLabel1.setFont(new Font("Arial", Font.BOLD, 12));
-            amountLabel1.setForeground(new Color(50, 50, 50));
-            formPanel.add(amountLabel1, gbc);
-        } else {
-            gbc.gridx = 0;
-            gbc.gridy = 0;
-            JLabel amountLabel2 = new JLabel("Amount:");
-            amountLabel2.setFont(new Font("Arial", Font.BOLD, 12));
-            amountLabel2.setForeground(new Color(50, 50, 50));
-            formPanel.add(amountLabel2, gbc);
+            gbc.gridx = 1;
+            receiverField = input();
+            panel.add(receiverField, gbc);
+            row++;
         }
+
+        gbc.gridx = 0; gbc.gridy = row;
+        panel.add(label("Amount"), gbc);
 
         gbc.gridx = 1;
-        amountField = new JTextField(15);
-        amountField.setFont(new Font("Arial", Font.PLAIN, 12));
-        amountField.setForeground(Color.BLACK);
-        amountField.setBackground(Color.WHITE);
-        amountField.setEnabled(true);
-        amountField.setEditable(true);
-        formPanel.add(amountField, gbc);
+        amountField = input();
+        panel.add(amountField, gbc);
 
-        errorLabel = new JLabel(" ");
-        errorLabel.setForeground(Color.RED);
-        errorLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        gbc.gridx = 0;
-        gbc.gridy = type == TransactionType.TRANSFER ? 2 : 1;
+        gbc.gridx = 0; gbc.gridy = row + 1;
         gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        formPanel.add(errorLabel, gbc);
+        errorLabel = new JLabel(" ", SwingConstants.CENTER);
+        errorLabel.setForeground(Color.RED);
+        errorLabel.setFont(Theme.BODY_FONT);
+        panel.add(errorLabel, gbc);
 
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        buttonPanel.setBackground(new Color(245, 245, 250));
-        JButton submitButton = new JButton(getSubmitButtonText());
-        submitButton.setPreferredSize(new Dimension(130, 40));
-        submitButton.setBackground(new Color(0, 120, 60));
-        submitButton.setForeground(Color.WHITE);
-        submitButton.setFont(new Font("Arial", Font.BOLD, 13));
-        submitButton.setFocusPainted(false);
-        submitButton.setOpaque(true);
-        submitButton.setContentAreaFilled(true);
-        submitButton.setBorderPainted(true);
-        submitButton.setBorder(BorderFactory.createRaisedBevelBorder());
-        submitButton.addActionListener(new SubmitActionListener());
-
-        JButton cancelButton = new JButton("Cancel");
-        cancelButton.setPreferredSize(new Dimension(130, 40));
-        cancelButton.setBackground(new Color(150, 150, 150));
-        cancelButton.setForeground(Color.WHITE);
-        cancelButton.setFont(new Font("Arial", Font.BOLD, 13));
-        cancelButton.setFocusPainted(false);
-        cancelButton.setOpaque(true);
-        cancelButton.setContentAreaFilled(true);
-        cancelButton.setBorderPainted(true);
-        cancelButton.setBorder(BorderFactory.createRaisedBevelBorder());
-        cancelButton.addActionListener(e -> dispose());
-
-        buttonPanel.add(submitButton);
-        buttonPanel.add(cancelButton);
-
-        mainPanel.add(formPanel, BorderLayout.CENTER);
-        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
-
-        add(mainPanel);
-        
-        SwingUtilities.invokeLater(() -> {
-            if (type == TransactionType.TRANSFER && receiverAccountField != null) {
-                receiverAccountField.requestFocus();
-            } else if (amountField != null) {
-                amountField.requestFocus();
-            }
-        });
+        return panel;
     }
 
-    private String getSubmitButtonText() {
-        switch (type) {
-            case DEPOSIT:
-                return "Deposit";
-            case WITHDRAW:
-                return "Withdraw";
-            case TRANSFER:
-                return "Transfer";
-            default:
-                return "Submit";
+    private JPanel buttonPanel() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 5));
+        panel.setBackground(Theme.BACKGROUND_COLOR);
+
+        panel.add(primaryButton(actionText(), this::submit));
+        panel.add(secondaryButton("Cancel", this::dispose));
+
+        return panel;
+    }
+
+    // ---------- Actions ----------
+
+    private void submit() {
+        String amtText = amountField.getText().trim();
+
+        if (amtText.isEmpty()) {
+            error("Amount required");
+            return;
         }
-    }
 
-    private class SubmitActionListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String amountText = amountField.getText().trim();
-            
-            if (amountText.isEmpty()) {
-                errorLabel.setText("Please enter an amount");
-                return;
-            }
+        double amount;
+        try {
+            amount = Double.parseDouble(amtText);
+        } catch (NumberFormatException e) {
+            error("Invalid amount");
+            return;
+        }
 
-            try {
-                double amount = Double.parseDouble(amountText);
-                if (amount <= 0) {
-                    errorLabel.setText("Amount must be greater than zero");
-                    return;
-                }
+        if (amount <= 0) {
+            error("Amount must be greater than zero");
+            return;
+        }
 
-                if (type == TransactionType.DEPOSIT) {
-                    bankingSystem.deposit(accountNumber, amount);
-                    JOptionPane.showMessageDialog(TransactionDialog.this,
-                            "Deposit successful!\nNew Balance: $" + String.format("%.2f", bankingSystem.getBalance(accountNumber)),
-                            "Success", JOptionPane.INFORMATION_MESSAGE);
-                    dispose();
-                } else if (type == TransactionType.WITHDRAW) {
-                    bankingSystem.withdraw(accountNumber, amount);
-                    JOptionPane.showMessageDialog(TransactionDialog.this,
-                            "Withdrawal successful!\nRemaining Balance: $" + String.format("%.2f", bankingSystem.getBalance(accountNumber)),
-                            "Success", JOptionPane.INFORMATION_MESSAGE);
-                    dispose();
-                } else if (type == TransactionType.TRANSFER) {
-                    String receiverAccount = receiverAccountField.getText().trim();
-                    if (receiverAccount.isEmpty()) {
-                        errorLabel.setText("Please enter receiver account number");
+        try {
+            switch (type) {
+                case DEPOSIT -> bankingSystem.deposit(accountNumber, amount);
+                case WITHDRAW -> bankingSystem.withdraw(accountNumber, amount);
+                case TRANSFER -> {
+                    String receiver = receiverField.getText().trim();
+                    if (receiver.isEmpty()) {
+                        error("Receiver account required");
                         return;
                     }
-                    bankingSystem.transferFunds(accountNumber, receiverAccount, amount);
-                    JOptionPane.showMessageDialog(TransactionDialog.this,
-                            "Transfer successful!\nYour Remaining Balance: $" + String.format("%.2f", bankingSystem.getBalance(accountNumber)),
-                            "Success", JOptionPane.INFORMATION_MESSAGE);
-                    dispose();
+                    bankingSystem.transferFunds(accountNumber, receiver, amount);
                 }
-            } catch (NumberFormatException ex) {
-                errorLabel.setText("Invalid amount format");
-            } catch (Exception ex) {
-                errorLabel.setText("Error: " + ex.getMessage());
             }
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    successMessage(amount),
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+            dispose();
+
+        } catch (Exception ex) {
+            error(ex.getMessage());
         }
+    }
+
+    // ---------- Helpers ----------
+
+    private JLabel label(String text) {
+        JLabel l = new JLabel(text);
+        l.setFont(Theme.SUBHEADER_FONT);
+        l.setForeground(Theme.TEXT_SECONDARY);
+        return l;
+    }
+
+    private JTextField input() {
+        JTextField f = new JTextField(15);
+        f.setFont(Theme.BODY_FONT);
+        f.setForeground(Theme.TEXT_PRIMARY);
+        f.setBackground(Theme.PANEL_COLOR);
+        f.setCaretColor(Theme.TEXT_PRIMARY);
+        f.setBorder(BorderFactory.createLineBorder(Theme.BORDER_COLOR));
+        return f;
+    }
+
+    private JButton primaryButton(String text, Runnable action) {
+        JButton b = new JButton(text);
+        b.setFont(Theme.SUBHEADER_FONT);
+        b.setBackground(Theme.BUTTON_PRIMARY);
+        b.setForeground(Theme.BUTTON_TEXT);
+        b.setFocusPainted(false);
+        b.addActionListener(e -> action.run());
+        return b;
+    }
+
+    private JButton secondaryButton(String text, Runnable action) {
+        JButton b = new JButton(text);
+        b.setFont(Theme.SUBHEADER_FONT);
+        b.setBackground(Theme.PANEL_COLOR);
+        b.setForeground(Theme.TEXT_PRIMARY);
+        b.setFocusPainted(false);
+        b.addActionListener(e -> action.run());
+        return b;
+    }
+
+    private void error(String msg) {
+        errorLabel.setText(msg);
+    }
+
+    private String actionText() {
+        return switch (type) {
+            case DEPOSIT -> "Deposit";
+            case WITHDRAW -> "Withdraw";
+            case TRANSFER -> "Transfer";
+        };
+    }
+
+    private String successMessage(double amt) {
+        return actionText() + " successful.\nBalance: $" +
+                String.format("%.2f", bankingSystem.getBalance(accountNumber));
     }
 }

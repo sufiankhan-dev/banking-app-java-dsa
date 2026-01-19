@@ -5,235 +5,166 @@ import com.banking.Main;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class MainWindow extends JFrame {
+
     private JTextField usernameField;
     private JPasswordField pinField;
     private JLabel errorLabel;
-    private BankingSystem bankingSystem;
+    private final BankingSystem bankingSystem = Main.bankingSystem;
 
     public MainWindow() {
-        this.bankingSystem = Main.bankingSystem;
         initializeUI();
     }
 
     private void initializeUI() {
         setTitle("Banking System - Login");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(550, 450);
+        setSize(500, 400);
         setLocationRelativeTo(null);
         setResizable(false);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        JPanel mainPanel = new JPanel(new BorderLayout(20, 20));
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
-        mainPanel.setBackground(new Color(245, 245, 250));
+        JPanel root = new JPanel(new BorderLayout(20, 20));
+        root.setBackground(Theme.BACKGROUND_COLOR);
+        root.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+        add(root);
 
-        JPanel headerPanel = new JPanel();
-        headerPanel.setBackground(new Color(245, 245, 250));
-        JLabel titleLabel = new JLabel("Welcome to Banking System");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        titleLabel.setForeground(new Color(0, 70, 150));
-        headerPanel.add(titleLabel);
-
-        JPanel loginPanel = new JPanel(new GridBagLayout());
-        loginPanel.setBackground(new Color(255, 255, 255));
-        loginPanel.setBorder(BorderFactory.createTitledBorder(
-            BorderFactory.createEtchedBorder(), "Login", 
-            javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION,
-            javax.swing.border.TitledBorder.DEFAULT_POSITION,
-            new Font("Arial", Font.BOLD, 14),
-            new Color(0, 70, 150)));
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.anchor = GridBagConstraints.WEST;
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        JLabel usernameLabel = new JLabel("Username:");
-        usernameLabel.setFont(new Font("Arial", Font.BOLD, 12));
-        usernameLabel.setForeground(new Color(50, 50, 50));
-        loginPanel.add(usernameLabel, gbc);
-
-        gbc.gridx = 1;
-        usernameField = new JTextField(25);
-        usernameField.setPreferredSize(new Dimension(200, 30));
-        usernameField.setFont(new Font("Arial", Font.PLAIN, 12));
-        usernameField.setForeground(Color.BLACK);
-        usernameField.setBackground(Color.WHITE);
-        usernameField.setEnabled(true);
-        usernameField.setEditable(true);
-        usernameField.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
-            BorderFactory.createEmptyBorder(5, 8, 5, 8)));
-        loginPanel.add(usernameField, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        JLabel pinLabel = new JLabel("PIN:");
-        pinLabel.setFont(new Font("Arial", Font.BOLD, 12));
-        pinLabel.setForeground(new Color(50, 50, 50));
-        loginPanel.add(pinLabel, gbc);
-
-        gbc.gridx = 1;
-        pinField = new JPasswordField(25);
-        pinField.setPreferredSize(new Dimension(200, 30));
-        pinField.setForeground(Color.BLACK);
-        pinField.setBackground(Color.WHITE);
-        pinField.setEnabled(true);
-        pinField.setEditable(true);
-        pinField.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
-            BorderFactory.createEmptyBorder(5, 8, 5, 8)));
-        loginPanel.add(pinField, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        JButton loginButton = new JButton("Login");
-        loginButton.setPreferredSize(new Dimension(150, 40));
-        loginButton.setBackground(new Color(0, 102, 204));
-        loginButton.setForeground(Color.WHITE);
-        loginButton.setFont(new Font("Arial", Font.BOLD, 14));
-        loginButton.setFocusPainted(false);
-        loginButton.setOpaque(true);
-        loginButton.setContentAreaFilled(true);
-        loginButton.setBorderPainted(true);
-        loginButton.setBorder(BorderFactory.createRaisedBevelBorder());
-        loginButton.addActionListener(new LoginActionListener());
-        loginPanel.add(loginButton, gbc);
-
-        gbc.gridy = 3;
-        gbc.gridwidth = 2;
-        gbc.insets = new Insets(15, 10, 5, 10);
-        gbc.anchor = GridBagConstraints.CENTER;
-        JPanel optionsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 5));
-        optionsPanel.setBackground(new Color(255, 255, 255));
-        optionsPanel.setOpaque(true);
-        
-        JButton createAccountLink = new JButton("Create New Account");
-        createAccountLink.setBorderPainted(false);
-        createAccountLink.setContentAreaFilled(false);
-        createAccountLink.setForeground(new Color(0, 102, 204));
-        createAccountLink.setFont(new Font("Arial", Font.PLAIN, 12));
-        createAccountLink.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        createAccountLink.addActionListener(e -> {
-            CreateAccountDialog dialog = new CreateAccountDialog(this);
-            dialog.setVisible(true);
-        });
-        optionsPanel.add(createAccountLink);
-        
-        JLabel separator = new JLabel("|");
-        separator.setForeground(new Color(150, 150, 150));
-        optionsPanel.add(separator);
-        
-        JButton adminLoginLink = new JButton("Admin Login");
-        adminLoginLink.setBorderPainted(false);
-        adminLoginLink.setContentAreaFilled(false);
-        adminLoginLink.setForeground(new Color(0, 102, 204));
-        adminLoginLink.setFont(new Font("Arial", Font.PLAIN, 12));
-        adminLoginLink.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        adminLoginLink.addActionListener(new AdminLoginActionListener());
-        optionsPanel.add(adminLoginLink);
-        
-        loginPanel.add(optionsPanel, gbc);
-
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
-        buttonPanel.setBackground(new Color(245, 245, 250));
-
-        JButton createAccountButton = new JButton("Create New Account");
-        createAccountButton.setPreferredSize(new Dimension(180, 40));
-        createAccountButton.setBackground(new Color(0, 102, 204));
-        createAccountButton.setForeground(Color.WHITE);
-        createAccountButton.setFont(new Font("Arial", Font.BOLD, 13));
-        createAccountButton.setFocusPainted(false);
-        createAccountButton.setOpaque(true);
-        createAccountButton.setContentAreaFilled(true);
-        createAccountButton.setBorderPainted(true);
-        createAccountButton.setBorder(BorderFactory.createRaisedBevelBorder());
-        createAccountButton.addActionListener(e -> {
-            CreateAccountDialog dialog = new CreateAccountDialog(this);
-            dialog.setVisible(true);
-        });
-
-        JButton adminLoginButton = new JButton("Admin Login");
-        adminLoginButton.setPreferredSize(new Dimension(180, 40));
-        adminLoginButton.setBackground(new Color(0, 102, 204));
-        adminLoginButton.setForeground(Color.WHITE);
-        adminLoginButton.setFont(new Font("Arial", Font.BOLD, 13));
-        adminLoginButton.setFocusPainted(false);
-        adminLoginButton.setOpaque(true);
-        adminLoginButton.setContentAreaFilled(true);
-        adminLoginButton.setBorderPainted(true);
-        adminLoginButton.setBorder(BorderFactory.createRaisedBevelBorder());
-        adminLoginButton.addActionListener(new AdminLoginActionListener());
-
-        buttonPanel.add(createAccountButton);
-        buttonPanel.add(adminLoginButton);
-
-        errorLabel = new JLabel(" ");
-        errorLabel.setForeground(Color.RED);
-        errorLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        errorLabel.setFont(new Font("Arial", Font.PLAIN, 12));
-
-        mainPanel.add(headerPanel, BorderLayout.NORTH);
-        mainPanel.add(loginPanel, BorderLayout.CENTER);
-        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
-
-        JPanel errorPanel = new JPanel(new BorderLayout());
-        errorPanel.setBackground(new Color(245, 245, 250));
-        errorPanel.add(errorLabel, BorderLayout.CENTER);
-        mainPanel.add(errorPanel, BorderLayout.AFTER_LAST_LINE);
-
-        add(mainPanel);
+        root.add(buildHeader(), BorderLayout.NORTH);
+        root.add(buildLoginCard(), BorderLayout.CENTER);
+        root.add(buildErrorLabel(), BorderLayout.SOUTH);
     }
 
-    private class LoginActionListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String username = usernameField.getText().trim();
-            String pin = new String(pinField.getPassword()).trim();
+    private JPanel buildHeader() {
+        JLabel title = new JLabel("Welcome to Banking System", SwingConstants.CENTER);
+        title.setFont(Theme.HEADER_FONT);
+        title.setForeground(Theme.TEXT_PRIMARY);
 
-            if (username.isEmpty() || pin.isEmpty()) {
-                errorLabel.setText("Please enter both username and PIN");
-                return;
-            }
+        JPanel panel = new JPanel();
+        panel.setBackground(Theme.BACKGROUND_COLOR);
+        panel.add(title);
+        return panel;
+    }
 
-            try {
-                bankingSystem.login(username, pin);
-                String accountNumber = bankingSystem.getCurrentLoggedInAccount();
-                String holderName = bankingSystem.getAccountHolderName(accountNumber);
-                errorLabel.setText(" ");
-                
-                UserDashboard userDashboard = new UserDashboard();
-                userDashboard.setVisible(true);
-                dispose();
-            } catch (Exception ex) {
-                errorLabel.setText("Error: " + ex.getMessage());
-                pinField.setText("");
-            }
+    private JPanel buildLoginCard() {
+        JPanel card = new JPanel(new GridBagLayout());
+        card.setBackground(Theme.CARD_COLOR);
+        card.setBorder(BorderFactory.createEmptyBorder(25, 25, 25, 25));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        gbc.gridx = 0; gbc.gridy = 0;
+        card.add(label("Username"), gbc);
+
+        gbc.gridx = 1;
+        usernameField = inputField();
+        card.add(usernameField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 1;
+        card.add(label("PIN"), gbc);
+
+        gbc.gridx = 1;
+        pinField = new JPasswordField(20);
+        styleInput(pinField);
+        card.add(pinField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        card.add(primaryButton("Login", this::login), gbc);
+
+        gbc.gridy = 3;
+        card.add(linkButton("Create New Account", e ->
+                new CreateAccountDialog(this).setVisible(true)
+        ), gbc);
+
+        gbc.gridy = 4;
+        card.add(linkButton("Admin Login", e -> adminLogin()), gbc);
+
+        return card;
+    }
+
+    private JLabel buildErrorLabel() {
+        errorLabel = new JLabel(" ", SwingConstants.CENTER);
+        errorLabel.setForeground(Color.RED);
+        errorLabel.setFont(Theme.BODY_FONT);
+        return errorLabel;
+    }
+
+    // ---------- Helpers ----------
+
+    private JLabel label(String text) {
+        JLabel l = new JLabel(text);
+        l.setFont(Theme.SUBHEADER_FONT);
+        l.setForeground(Theme.TEXT_SECONDARY);
+        return l;
+    }
+
+    private JTextField inputField() {
+        JTextField field = new JTextField(20);
+        styleInput(field);
+        return field;
+    }
+
+    private void styleInput(JTextField field) {
+        field.setFont(Theme.BODY_FONT);
+        field.setForeground(Theme.TEXT_PRIMARY);
+        field.setBackground(Theme.PANEL_COLOR);
+        field.setCaretColor(Theme.TEXT_PRIMARY);
+        field.setBorder(BorderFactory.createLineBorder(Theme.BORDER_COLOR));
+    }
+
+    private JButton primaryButton(String text, Runnable action) {
+        JButton btn = new JButton(text);
+        btn.setFont(Theme.SUBHEADER_FONT);
+        btn.setBackground(Theme.BUTTON_PRIMARY);
+        btn.setForeground(Theme.BUTTON_TEXT);
+        btn.setFocusPainted(false);
+        btn.addActionListener(e -> action.run());
+        return btn;
+    }
+
+    private JButton linkButton(String text, java.awt.event.ActionListener action) {
+        JButton btn = new JButton(text);
+        btn.setFont(Theme.BODY_FONT);
+        btn.setForeground(Theme.PRIMARY_COLOR);
+        btn.setContentAreaFilled(false);
+        btn.setBorderPainted(false);
+        btn.addActionListener(action);
+        return btn;
+    }
+
+    // ---------- Logic ----------
+
+    private void login() {
+        String username = usernameField.getText().trim();
+        String pin = new String(pinField.getPassword()).trim();
+
+        if (username.isEmpty() || pin.isEmpty()) {
+            errorLabel.setText("Username and PIN required");
+            return;
+        }
+
+        try {
+            bankingSystem.login(username, pin);
+            new UserDashboard().setVisible(true);
+            dispose();
+        } catch (Exception ex) {
+            errorLabel.setText(ex.getMessage());
+            pinField.setText("");
         }
     }
 
-    private class AdminLoginActionListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String username = JOptionPane.showInputDialog(MainWindow.this, "Enter Admin Username:", "Admin Authentication", JOptionPane.QUESTION_MESSAGE);
-            if (username == null) return;
+    private void adminLogin() {
+        String u = JOptionPane.showInputDialog(this, "Admin Username");
+        String p = JOptionPane.showInputDialog(this, "Admin Password");
 
-            String password = JOptionPane.showInputDialog(MainWindow.this, "Enter Admin Password:", "Admin Authentication", JOptionPane.QUESTION_MESSAGE);
-            if (password == null) return;
-
-            if (username.equals("admin") && password.equals("admin123")) {
-                errorLabel.setText(" ");
-                AdminDashboard adminDashboard = new AdminDashboard();
-                adminDashboard.setVisible(true);
-                dispose();
-            } else {
-                JOptionPane.showMessageDialog(MainWindow.this, "Invalid admin credentials. Access denied.", "Authentication Failed", JOptionPane.ERROR_MESSAGE);
-            }
+        if ("admin".equals(u) && "admin123".equals(p)) {
+            new AdminDashboard().setVisible(true);
+            dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Invalid admin credentials");
         }
     }
 }

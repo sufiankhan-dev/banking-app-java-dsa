@@ -56,6 +56,11 @@ public class UserDashboard extends JFrame {
 
         JButton logoutButton = new JButton("Logout");
         styleButton(logoutButton, Theme.BUTTON_PRIMARY);
+        Theme.addHoverEffect(
+                logoutButton,
+                Theme.BUTTON_PRIMARY,
+                Theme.BUTTON_PRIMARY_HOVER
+        );
         logoutButton.addActionListener(e -> {
             bankingSystem.logout();
             new MainWindow().setVisible(true);
@@ -82,21 +87,51 @@ public class UserDashboard extends JFrame {
         buttonPanel.setPreferredSize(new Dimension(220, 0));
 
         JButton depositButton = createActionButton("Deposit Money");
+        Theme.addHoverEffect(
+                depositButton,
+                Theme.BUTTON_PRIMARY,
+                Theme.BUTTON_PRIMARY_HOVER
+        );
         depositButton.addActionListener(e -> performDeposit());
 
         JButton withdrawButton = createActionButton("Withdraw Money");
+        Theme.addHoverEffect(
+                withdrawButton,
+                Theme.BUTTON_PRIMARY,
+                Theme.BUTTON_PRIMARY_HOVER
+        );
         withdrawButton.addActionListener(e -> performWithdraw());
 
         JButton transferButton = createActionButton("Transfer Funds");
+        Theme.addHoverEffect(
+                transferButton,
+                Theme.BUTTON_PRIMARY,
+                Theme.BUTTON_PRIMARY_HOVER
+        );
         transferButton.addActionListener(e -> performTransfer());
 
         JButton viewHistoryButton = createActionButton("View Transaction History");
+        Theme.addHoverEffect(
+                viewHistoryButton,
+                Theme.BUTTON_PRIMARY,
+                Theme.BUTTON_PRIMARY_HOVER
+        );
         viewHistoryButton.addActionListener(e -> showTransactionHistory());
 
         JButton updateInfoButton = createActionButton("Update Account Info");
+        Theme.addHoverEffect(
+                updateInfoButton,
+                Theme.BUTTON_PRIMARY,
+                Theme.BUTTON_PRIMARY_HOVER
+        );
         updateInfoButton.addActionListener(e -> updateAccountInfo());
 
         JButton changePinButton = createActionButton("Change PIN");
+        Theme.addHoverEffect(
+                changePinButton,
+                Theme.BUTTON_PRIMARY,
+                Theme.BUTTON_PRIMARY_HOVER
+        );
         changePinButton.addActionListener(e -> changePin());
 
         buttonPanel.add(depositButton);

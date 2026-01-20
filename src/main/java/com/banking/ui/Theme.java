@@ -1,12 +1,10 @@
 package com.banking.ui;
 import javax.swing.*;
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 
 public class Theme {
     // Primary Colors
     public static final Color PRIMARY_COLOR = new Color(114, 76, 210); // Deep purple
-    public static final Color SECONDARY_COLOR = new Color(142, 94, 255); // Lighter purple
     public static final Color BACKGROUND_COLOR = new Color(39, 36, 55); // Dark background
     public static final Color PANEL_COLOR = new Color(45, 39, 104, 210); // Panel background
     public static final Color CARD_COLOR = new Color(58, 54, 82); // Card background
@@ -20,7 +18,6 @@ public class Theme {
     public static final Color BUTTON_PRIMARY = new Color(114, 76, 210);
     public static final Color BUTTON_PRIMARY_HOVER = new Color(142, 94, 255);
     public static final Color BUTTON_TEXT = new Color(255, 255, 255);
-
 
     public static final Color BUTTON_SECONDARY = CARD_COLOR;
     public static final Color BUTTON_SECONDARY_HOVER = new Color(121, 121, 131);
@@ -38,6 +35,7 @@ public class Theme {
         button.setBackground(normal);
         button.setOpaque(true);
         button.setBorderPainted(false);
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         button.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override

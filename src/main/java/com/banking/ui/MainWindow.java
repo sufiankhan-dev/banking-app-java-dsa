@@ -110,7 +110,7 @@ public class MainWindow extends JFrame {
     private void styleInput(JTextField field) {
         field.setFont(Theme.BODY_FONT);
         field.setForeground(Theme.TEXT_PRIMARY);
-        field.setBackground(Theme.PANEL_COLOR);
+        field.setBackground(Theme.BACKGROUND_COLOR);
         field.setCaretColor(Theme.TEXT_PRIMARY);
         field.setBorder(BorderFactory.createLineBorder(Theme.BORDER_COLOR));
     }
@@ -121,6 +121,11 @@ public class MainWindow extends JFrame {
         btn.setBackground(Theme.BUTTON_PRIMARY);
         btn.setForeground(Theme.BUTTON_TEXT);
         btn.setFocusPainted(false);
+        Theme.addHoverEffect(
+                btn,
+                Theme.BUTTON_PRIMARY,
+                Theme.BUTTON_PRIMARY_HOVER
+        );
         btn.addActionListener(e -> action.run());
         return btn;
     }
@@ -128,9 +133,21 @@ public class MainWindow extends JFrame {
     private JButton linkButton(String text, java.awt.event.ActionListener action) {
         JButton btn = new JButton(text);
         btn.setFont(Theme.BODY_FONT);
-        btn.setForeground(Theme.PRIMARY_COLOR);
+        btn.setForeground(Theme.TEXT_PRIMARY);
         btn.setContentAreaFilled(false);
         btn.setBorderPainted(false);
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                btn.setForeground(Theme.PRIMARY_COLOR); // hover color
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                btn.setForeground(Theme.TEXT_PRIMARY); // normal color
+            }
+
+        });
         btn.addActionListener(action);
         return btn;
     }

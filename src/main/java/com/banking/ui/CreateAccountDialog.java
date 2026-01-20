@@ -225,7 +225,7 @@ public class CreateAccountDialog extends JDialog {
 
     private void styleField(JTextField f) {
         f.setFont(Theme.BODY_FONT);
-        f.setBackground(Theme.CARD_COLOR);
+        f.setBackground(Theme.BACKGROUND_COLOR);
         f.setForeground(Theme.TEXT_PRIMARY);
         f.setBorder(BorderFactory.createLineBorder(Theme.BORDER_COLOR));
     }
